@@ -5,8 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏃 跑酷大冒险 - 联机技能豪华版</title>
     <link rel="stylesheet" href="style.css">
-    <!-- 免服务器联机库：PeerJS（免费云服务器，支持WebRTC点对点） -->
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <!-- 免服务器联机库：PeerJS（用国内可访问的CDN，不阻塞页面） -->
+    <script>
+        // 多CDN容灾：按顺序尝试加载，国内优先
+        (function () {
+            var urls = [
+                'https://cdn.bootcdn.net/ajax/libs/peerjs/1.5.4/peerjs.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js',
+                'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'
+            ];
+            var i = 0;
+            function tryNext() {
+                if (i >= urls.length) return; // 全部失败也不阻塞页面
+                var s = document.createElement('script');
+                s.src = urls[i++];
+                s.onload = function () { window.__peerReady = true; };
+                s.onerror = tryNext; // 失败就试下一个
+                document.head.appendChild(s);
+            }
+            tryNext();
+        })();
+    </script>
 </head>
 <body>
     <div class="app-root">

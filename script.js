@@ -401,7 +401,7 @@ function destroyPeer() {
 }
 
 function createRoom() {
-    if (typeof Peer === 'undefined') { showToast('❌ 联机库加载失败，请检查网络（需要联网）', 'error'); return; }
+    if (typeof Peer === 'undefined') { showToast('⏳ 联机库加载中，请稍等几秒再试…（如果一直不行说明网络被墙）', ''); return; }
     destroyPeer();
     isHost = true;
     const customId = 'parkour_' + genRoomId();
@@ -429,7 +429,7 @@ function createRoom() {
 }
 
 function joinRoom(roomId) {
-    if (typeof Peer === 'undefined') { showToast('❌ 联机库加载失败，请检查网络（需要联网）', 'error'); return; }
+    if (typeof Peer === 'undefined') { showToast('⏳ 联机库加载中，请稍等几秒再试…（如果一直不行说明网络被墙）', ''); return; }
     if (!/^\d{6}$/.test(roomId)) { showToast('请输入6位纯数字房间号', 'error'); return; }
     destroyPeer();
     isHost = false; isOnlineHelper = true;
@@ -897,7 +897,7 @@ function loadData() {
     try {
         const raw = localStorage.getItem(SAVE_KEY);
         let loaded = raw ? JSON.parse(raw) : {};
-        const base = structuredClone(DEFAULT_DATA);
+        const base = JSON.parse(JSON.stringify(DEFAULT_DATA));
         // 合并基础字段
         const data = Object.assign(base, loaded);
         // 确保新增钻石字段一定存在（兼容老存档）
@@ -906,7 +906,7 @@ function loadData() {
         if (!Array.isArray(data.unlockedDiamondSkills)) data.unlockedDiamondSkills = [];
         if (!Array.isArray(data.equippedSkills)) data.equippedSkills = [...(base.equippedSkills||[])];
         return data;
-    } catch { return structuredClone(DEFAULT_DATA); }
+    } catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
 }
 function saveData() { localStorage.setItem(SAVE_KEY, JSON.stringify(gameData)); }
 let gameData = loadData();
@@ -1221,7 +1221,7 @@ function initSettingsUI() {
     document.getElementById('defaultDiff').onchange = e => { s.defaultDiff = e.target.value; selectedDiff = e.target.value; saveData(); refreshMenuUI(); };
     document.getElementById('btnReset').onclick = () => {
         if (!confirm('确定要清除所有游戏数据吗？\n（金币、皮肤、成就、进度都会消失！）')) return;
-        localStorage.removeItem(SAVE_KEY); gameData = structuredClone(DEFAULT_DATA); saveData(); initSettingsUI(); refreshMenuUI(); showToast('数据已重置', 'success');
+        localStorage.removeItem(SAVE_KEY); gameData = JSON.parse(JSON.stringify(DEFAULT_DATA)); saveData(); initSettingsUI(); refreshMenuUI(); showToast('数据已重置', 'success');
     };
 }
 
@@ -1377,6 +1377,10 @@ function createJumpParticles(x,y,extra) { const n = extra?16:11; for (let i = 0;
 function createCoinParticles(x,y) { for (let i = 0; i < 8; i++) { const a = Math.PI*2*i/8; particles.push({ x,y,vx:Math.cos(a)*4,vy:Math.sin(a)*4,radius:3,color:'#f7c948',life:1 }); } }
 function updateParticles() { particles = particles.filter(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.2; p.life-=0.028; return p.life>0; }); }
 function drawParticles() { particles.forEach(p => { ctx.save(); ctx.globalAlpha=p.life; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius*p.life,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
+// ========== 【粒子/特效辅助函数（钻石技能与皮肤被动用）】 ==========
+function spawnParticle(x, y, color, radius) { if (!particles) particles=[]; particles.push({ x, y, vx:(Math.random()-0.5)*8, vy:(Math.random()-0.5)*8-2, radius:radius||3, color:color||'#fff', life:0.8 }); }
+function spawnLightning(x, y) { if (!particles) particles=[]; for (let i=0;i<12;i++) particles.push({ x:x+(Math.random()-0.5)*30, y:y+i*5, vx:0, vy:0, radius:2, color:'#fdcb6e', life:0.5 }); }
+function addShieldParticle() { if (!particles) particles=[]; for (let i=0;i<16;i++) { const a=Math.PI*2*i/16; particles.push({ x:player.x+Math.cos(a)*40, y:player.y+30+Math.sin(a)*30, vx:Math.cos(a)*2, vy:Math.sin(a)*2, radius:3, color:'#74b9ff', life:1 }); } }
 
 function shadeColor(color, percent) { const num = parseInt(color.replace('#',''),16); const amt = Math.round(2.55*percent); const R = Math.max(0, Math.min(255, (num>>16)+amt)); const G = Math.max(0, Math.min(255, ((num>>8)&0xff)+amt)); const B = Math.max(0, Math.min(255, (num&0xff)+amt)); return '#'+(0x1000000+R*0x10000+G*0x100+B).toString(16).slice(1); }
 
