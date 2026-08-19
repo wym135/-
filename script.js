@@ -714,7 +714,6 @@ function ensureEquippedValid() {
     gameData.equippedSkills = valid;
     return valid;
 }
-ensureEquippedValid();
 
 // ========== 【技能装备界面渲染】 ==========
 function renderEquipSkill() {
@@ -910,6 +909,7 @@ function loadData() {
 }
 function saveData() { localStorage.setItem(SAVE_KEY, JSON.stringify(gameData)); }
 let gameData = loadData();
+ensureEquippedValid(); // 在 gameData 初始化后校验已装备技能
 let tempEquipped = []; // 技能装备界面里的临时选择
 
 // ========== 【音乐系统（新增技能音效）】 ==========
