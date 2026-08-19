@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏃 跑酷大冒险 - 联机技能豪华版</title>
+    <title>🏃 跑酷大冒险 - 豪华版 v3.0</title>
     <link rel="stylesheet" href="style.css">
     <!-- 免服务器联机库：PeerJS（用国内可访问的CDN，不阻塞页面） -->
     <script>
@@ -49,8 +49,9 @@
                     <div class="info-item diamond-info"><span class="info-icon">💎</span><span id="menuDiamonds" class="info-value">0</span></div>
                     <div class="info-item"><span class="info-icon">🏆</span><span id="menuHighScore" class="info-value">0</span></div>
                     <div class="info-item"><span class="info-icon">⭐</span><span class="info-value" id="playerLevel">Lv.1</span></div>
-                    <button id="btnRechargeTop" class="recharge-btn mini">💎 充值</button>
+                    <div class="info-item"><span class="info-icon">🏅</span><span class="info-value" id="menuTrophies">0</span></div>
                 </div>
+                <div id="worldInfo" class="world-info"></div>
 
                 <div class="menu-buttons">
                     <button id="btnStart" class="menu-btn primary">
@@ -85,8 +86,20 @@
                         <span class="btn-icon">⚙️</span><span>游戏设置</span>
                     </button>
                     <button id="btnRecharge" class="menu-btn recharge-btn">
-                        <span class="btn-icon">💎</span><span>钻石充值（解锁神装）</span>
-                        <span class="btn-tag diamond-tag">HOT</span>
+                        <span class="btn-icon">💎</span><span>钻石兑换（100🪙=1💎）</span>
+                        <span class="btn-tag diamond-tag">NEW</span>
+                    </button>
+                    <button id="btnWeaponShop" class="menu-btn weapon-btn">
+                        <span class="btn-icon">⚔️</span><span>武器商城</span>
+                        <span class="btn-tag weapon-tag">NEW!</span>
+                    </button>
+                    <button id="btnPetShop" class="menu-btn pet-btn">
+                        <span class="btn-icon">🐾</span><span>宠物商店</span>
+                        <span class="btn-tag pet-tag">NEW!</span>
+                    </button>
+                    <button id="btnBattle" class="menu-btn battle-btn">
+                        <span class="btn-icon">🥊</span><span>好友乱斗</span>
+                        <span class="btn-tag battle-tag">PVP</span>
                     </button>
                     <button id="btnHelp" class="menu-btn small">
                         <span class="btn-icon">📖</span><span>玩法说明</span>
@@ -96,7 +109,7 @@
                 <div class="audio-controls">
                     <button id="btnMusic" class="audio-btn"><span id="musicIcon">🔊</span> 音乐</button>
                     <button id="btnSound" class="audio-btn"><span id="soundIcon">🔊</span> 音效</button>
-                    <div class="version">v2.0 联机技能版</div>
+                    <div class="version">v3.0 豪华版 · 武器+宠物+乱斗</div>
                 </div>
             </div>
         </div>
@@ -183,22 +196,64 @@
             <div class="equip-grid" id="equipGrid"></div>
         </div>
 
-        <!-- ========== 【💎 钻石充值中心】 ========== -->
+        <!-- ========== 【💎 钻石兑换中心 v4.0】 ========== -->
         <div id="rechargeScreen" class="screen">
             <div class="sub-header recharge-header">
                 <button class="back-btn" data-back="menu">← 返回</button>
-                <h2>💎 钻石充值中心</h2>
-                <div class="diamond-balance">余额：<span id="diamondBalance">0</span> 💎</div>
+                <h2>💎 钻石兑换</h2>
+                <div class="diamond-balance">余额：<span id="diamondBalance">0</span> 💎 | 金币：<span id="rechargeCoins">0</span> 🪙</div>
             </div>
             <div class="recharge-banner">
-                <div class="rb-title">💎 首充任意档位额外送 <span class="hot-txt">+100% 钻石</span>！</div>
-                <div class="rb-desc">充值获得钻石，即可解锁【神话至尊皮肤】和【神级技能】，让你无敌跑酷！</div>
+                <div class="rb-title">💎 用金币兑换钻石！<span class="hot-txt">100 🪙 = 1 💎</span></div>
+                <div class="rb-desc">跑酷赚金币，然后来这里兑换钻石，解锁【神话至尊皮肤】和【神级技能】！</div>
             </div>
             <div class="recharge-grid" id="rechargeGrid">
-                <!-- 由JS渲染8个套餐 -->
+                <!-- 由JS渲染兑换套餐 -->
             </div>
             <div class="recharge-tip">
-                ⚠️ 提示：本游戏为演示版，充值不会真实扣款，点击即模拟充值到账，仅供学习体验！
+                💡 提示：每局最多获得20000金币，攒够了就来换钻石吧！
+            </div>
+        </div>
+
+        <!-- ========== 【⚔️ 武器商城 v3.0】 ========== -->
+        <div id="weaponShopScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>⚔️ 武器商城</h2>
+                <div class="coins-display">金币：<span id="weaponCoins">0</span> 🪙</div>
+            </div>
+            <div class="shop-banner">
+                <span>🗡️ 武器影响碰撞伤害和暴击率！购买后在跑酷碰撞敌人时造成更高伤害！</span>
+            </div>
+            <div class="shop-grid" id="weaponShopGrid">
+                <!-- 由JS渲染武器列表 -->
+            </div>
+        </div>
+
+        <!-- ========== 【🐾 宠物商店 v3.0】 ========== -->
+        <div id="petShopScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🐾 宠物商店</h2>
+                <div class="coins-display">金币：<span id="petCoins">0</span> 🪙</div>
+            </div>
+            <div class="shop-banner">
+                <span>🐾 携带宠物可获得被动加成！金币↑、生命↑、冷却↓，搭配皮肤更强！</span>
+            </div>
+            <div class="shop-grid" id="petShopGrid">
+                <!-- 由JS渲染宠物列表 -->
+            </div>
+        </div>
+
+        <!-- ========== 【🥊 好友乱斗 v3.0】 ========== -->
+        <div id="battleScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🥊 好友乱斗</h2>
+                <div class="coins-display">金币：<span id="battleCoins">0</span> 🪙</div>
+            </div>
+            <div id="battleContent">
+                <!-- 由JS动态渲染（创建房间/加入房间/战斗界面） -->
             </div>
         </div>
 
@@ -280,6 +335,24 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 🏆 胜利界面（单局达20000金币） -->
+                <div id="victoryScreen" class="overlay hidden">
+                    <div class="overlay-card victory">
+                        <div class="card-icon">🏆</div>
+                        <h2>胜利！</h2>
+                        <p class="victory-sub">恭喜达成20000金币！获得1个奖杯！</p>
+                        <div class="result-grid">
+                            <div class="result-cell highlight"><div class="rc-label">获得金币</div><div class="rc-value" id="victoryCoins">0</div></div>
+                            <div class="result-cell"><div class="rc-label">总奖杯数</div><div class="rc-value" id="victoryTrophies">0</div></div>
+                        </div>
+                        <div id="victoryWorld2Unlock" class="new-flag hidden">🌌 恭喜！已集满100个奖杯，世界二已解锁！</div>
+                        <div class="pause-btns">
+                            <button id="btnVictoryRetry" class="menu-btn primary">再来一局</button>
+                            <button id="btnVictoryMenu" class="menu-btn">返回菜单</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="game-footer">
@@ -357,8 +430,8 @@
                     <div class="setting-control"><button id="btnReset" class="menu-btn danger small">重置</button></div>
                 </div>
                 <div class="about-box">
-                    <h4>🏃 跑酷大冒险 联机技能豪华版 v2.0</h4>
-                    <p>11种技能 · 5种敌人 · 真P2P双人联机 · 6款皮肤 · 4种道具 · 10项成就</p>
+                    <h4>🏃 跑酷大冒险 豪华版 v3.0</h4>
+                    <p>21种技能 · 9把武器 · 9只宠物 · 好友乱斗 · 赛季制 · 24项成就</p>
                     <p class="about-tip">📢 想让朋友一起玩？查看「部署公网教程.md」，3步搞定全网畅玩！</p>
                 </div>
             </div>

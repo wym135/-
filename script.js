@@ -20,7 +20,47 @@ const SKILLS = [
 
     // ===== 钻石专属神级技能（用钻石解锁后才能装备） =====
     { id:'meteor',  name:'天神·流星雨', key:'Z', emoji:'☄️', cd:60, isDiamond:true, diamondPrice:399, color:'#ff4757', color2:'#6c5ce7', desc:'💎【神技·钻石解锁】召唤10颗天外陨石！全地图敌人+障碍物全部清空！还送30大金币！' },
-    { id:'genesis', name:'创世·时光回溯', key:'X', emoji:'🌌', cd:90, isDiamond:true, diamondPrice:699, color:'#5f27cd', color2:'#00d2d3', desc:'💎【终极技·钻石解锁】时间倒流！回满5颗心+所有技能CD重置+本局金币翻倍+3秒无敌！' }
+    { id:'genesis', name:'创世·时光回溯', key:'X', emoji:'🌌', cd:90, isDiamond:true, diamondPrice:699, color:'#5f27cd', color2:'#00d2d3', desc:'💎【终极技·钻石解锁】时间倒流！回满5颗心+所有技能CD重置+本局金币翻倍+3秒无敌！' },
+
+    // ===== v3.0 新增技能 =====
+    { id:'shield',  name:'能量护盾', key:'Y', emoji:'🛡️', cd:25, buyPrice:220, color:'#74b9ff', color2:'#0984e3', desc:'生成一面能量护盾！10秒内免疫1次伤害！' },
+    { id:'teleport',name:'瞬影移',   key:'U', emoji:'✨', cd:18, buyPrice:200, color:'#a29bfe', color2:'#6c5ce7', desc:'瞬间传送至前方300px！躲过一切危险！' },
+    { id:'double',  name:'双倍得分', key:'H', emoji:'🌟', cd:35, buyPrice:280, color:'#ffeaa7', color2:'#fdcb6e', desc:'15秒内所有得分翻倍！冲分神器！' },
+    { id:'rage',    name:'狂暴模式', key:'J', emoji:'😤', cd:30, buyPrice:320, color:'#ff7675', color2:'#d63031', desc:'10秒内碰撞直接秒杀敌人！无敌冲锋！' },
+    { id:'wind',    name:'风之翼',   key:'C', emoji:'🍃', cd:20, buyPrice:160, color:'#55efc4', color2:'#00b894', desc:'15秒内减速下落！轻松控制空中走位！' },
+    { id:'strike',  name:'雷霆万钧', key:'V', emoji:'🌩️', cd:28, buyPrice:260, color:'#fdcb6e', color2:'#f39c12', desc:'天降雷霆！屏幕内所有敌人掉半血！' },
+    { id:'healmax', name:'生命回涌', key:'B', emoji:'💝', cd:45, buyPrice:380, color:'#ff9ff3', color2:'#f368e0', desc:'瞬间回满所有生命值！还送5秒磁铁！' },
+    { id:'timestop',name:'时间停止', key:'N', emoji:'⏱️', cd:50, buyPrice:450, color:'#fab1a0', color2:'#e17055', desc:'5秒内全场敌人/障碍物完全静止！任你宰割！' }
+];
+
+// ========== 【武器系统 v3.0】 ==========
+// attack = 攻击力加成（影响碰撞伤害）；critChance = 暴击率（暴击伤害x2）
+const WEAPONS = [
+    { id:'fist',    name:'徒手',     buyPrice:0,    attack:0, crit:0,    emoji:'✊', desc:'默认武器，赤手空拳' },
+    { id:'stick',   name:'木棍',     buyPrice:150,  attack:1, crit:0.05, emoji:'🪵', desc:'攻击+1，暴击5%' },
+    { id:'sword',   name:'铁剑',    buyPrice:350,  attack:2, crit:0.10, emoji:'🗡️', desc:'攻击+2，暴击10%' },
+    { id:'hammer',  name:'战锤',    buyPrice:600,  attack:3, crit:0.08, emoji:'🔨', desc:'攻击+3，暴击8%' },
+    { id:'katana',  name:'武士刀',  buyPrice:900,  attack:2, crit:0.25, emoji:'⚔️', desc:'攻击+2，暴击25%（高暴击流）' },
+    { id:'flame',   name:'烈焰之刃', buyPrice:1400, attack:4, crit:0.20, emoji:'🔥', desc:'攻击+4，暴击20%（均衡型）' },
+    { id:'thunder', name:'雷霆权杖', buyPrice:1800, attack:3, crit:0.35, emoji:'⚡', desc:'攻击+3，暴击35%（暴击流）' },
+    // 钻石武器
+    { id:'dragon',  name:'神龙之牙', isDiamond:true, diamondPrice:499, attack:6, crit:0.30, emoji:'🐉', desc:'💎攻击+6，暴击30%（神级武器）' },
+    { id:'cosmos',   name:'宇宙之刃', isDiamond:true, diamondPrice:999, attack:8, crit:0.50, emoji:'🌠', desc:'💎攻击+8，暴击50%（最强武器）' }
+];
+
+// ========== 【宠物系统 v3.0】 ==========
+// bonus 里的字段会在 startGame 时生效，和皮肤被动叠加
+const PETS = [
+    { id:'none',    name:'无宠物',   buyPrice:0,    bonus:{}, emoji:'🚫', desc:'没有宠物陪伴' },
+    { id:'bird',    name:'小蓝鸟',   buyPrice:250,  bonus:{coinMul:1.1}, emoji:'🐦', desc:'金币收益+10%' },
+    { id:'cat',     name:'招财猫',   buyPrice:500,  bonus:{coinMul:1.25}, emoji:'🐱', desc:'金币收益+25%' },
+    { id:'dog',     name:'战斗犬',   buyPrice:600,  bonus:{extraHp:1}, emoji:'🐶', desc:'开局额外+1颗心' },
+    { id:'turtle',  name:'玄龟',     buyPrice:700,  bonus:{startShields:1}, emoji:'🐢', desc:'开局自带1个护盾' },
+    { id:'dragon',  name:'小龙崽',   buyPrice:1000, bonus:{cdMul:0.85}, emoji:'🐲', desc:'技能冷却-15%' },
+    { id:'phoenix', name:'火凤凰',   buyPrice:1500, bonus:{coinMul:1.2,extraHp:1}, emoji:'🦅', desc:'金币+20% & +1心' },
+    // 钻石宠物
+    { id:'unicorn', name:'独角兽',   isDiamond:true, diamondPrice:499, bonus:{coinMul:1.3,cdMul:0.8,scoreMul:1.1}, emoji:'🦄', desc:'💎金币+30% & CD-20% & 分数+10%' },
+    { id:'cosmos',  name:'宇宙精灵', isDiamond:true, diamondPrice:799, bonus:{coinMul:1.5,extraHp:2,cdMul:0.7,scoreMul:1.2}, emoji:'🌟', desc:'💎全属性UP！金币+50% & +2心 & CD-30% & 分数+20%' }
 ];
 
 const SKILL_MAP = {};
@@ -117,8 +157,8 @@ function useSkill(idOrKey) {
     const now = Date.now();
     if ((skillCooldowns[s.id] || 0) > now) { showToast(`${s.emoji} ${s.name} 还在冷却中！`, ''); return; }
 
-    // 💎 皮肤被动：技能冷却减免（神龙大帝-20% / 创世神-30%）
-    const cdEff = getSkinEffect(gameData.currentSkin).cdMul || 1;
+    // 💎 皮肤 + 🐾 宠物 被动：技能冷却减免
+    const cdEff = (getSkinEffect(gameData.currentSkin).cdMul || 1) * (getPetBonus().cdMul || 1);
     skillCooldowns[s.id] = now + Math.floor(s.cd * cdEff * 1000);
 
     // 联机模式：副手施放技能，通知主机
@@ -229,6 +269,58 @@ function execSkill(s) {
             // 金色粒子爆闪
             for (let i = 0; i < 100; i++) spawnParticle(player.x, player.y+20, (['#ffeaa7','#feca57','#f368e0','#55efc4','#00d2d3'])[Math.floor(Math.random()*5)], 5+Math.random()*5);
             AudioSys.play && AudioSys.play('revive');
+            break;
+        }
+        // ===== v3.0 新增技能 =====
+        case 'shield': { // 🛡️ 能量护盾：10秒护盾
+            addBuff('shield', 10);
+            for (let i=0;i<24;i++) spawnParticle(player.x, player.y+30, '#74b9ff', 3+Math.random()*3);
+            break;
+        }
+        case 'teleport': { // ✨ 瞬影移：前移300px
+            player.x = Math.min(player.x + 300, canvas.width - 150);
+            player.invul = Date.now() + 800;
+            for (let i=0;i<30;i++) spawnParticle(player.x-200+Math.random()*200, player.y+Math.random()*60, '#a29bfe', 4);
+            break;
+        }
+        case 'double': { // 🌟 双倍得分：15秒
+            addBuff('doubleScore', 15);
+            for (let i=0;i<20;i++) spawnParticle(player.x, player.y+20, '#ffeaa7', 4);
+            break;
+        }
+        case 'rage': { // 😤 狂暴：10秒碰撞秒杀
+            addBuff('rage', 10);
+            player.invul = Date.now() + 10000;
+            for (let i=0;i<40;i++) spawnParticle(player.x, player.y+20, '#ff7675', 5);
+            break;
+        }
+        case 'wind': { // 🍃 风之翼：15秒减速下落
+            addBuff('wind', 15);
+            break;
+        }
+        case 'strike': { // 🌩️ 雷霆万钧：所有敌人掉半血
+            enemies.forEach(e => {
+                if (e.dead || e.isBoss) return;
+                e.hp = Math.ceil((e.hp||1) / 2);
+                if (e.hp <= 0) killEnemyOrObstacle(e, true);
+                for (let i=0;i<8;i++) spawnParticle(e.x+e.width/2, e.y+e.height/2, '#fdcb6e', 4);
+            });
+            if (gameData.settings.shakeOn) { const cw=document.querySelector('.canvas-wrapper'); cw&&cw.classList.add('shake'); setTimeout(()=>cw&&cw.classList.remove('shake'),400); }
+            break;
+        }
+        case 'healmax': { // 💝 生命回涌：回满+5秒磁铁
+            const maxHp = Math.min(MAX_HP + (getSkinEffect(gameData.currentSkin).extraHp||0) + (getPetBonus().extraHp||0), 5);
+            playerHp = maxHp; updateHpUI(maxHp);
+            addBuff('magnet', 5);
+            for (let i=0;i<50;i++) spawnParticle(player.x, player.y+20, '#ff9ff3', 5);
+            AudioSys.play && AudioSys.play('revive');
+            break;
+        }
+        case 'timestop': { // ⏱️ 时间停止：5秒全场静止
+            addBuff('timestop', 5);
+            enemies.forEach(e => { e.frozen = Date.now() + 5000; });
+            obstacles.forEach(o => { o.frozen = Date.now() + 5000; });
+            for (let i=0;i<60;i++) spawnParticle(Math.random()*canvas.width, Math.random()*canvas.height, '#fab1a0', 3);
             break;
         }
     }
@@ -508,6 +600,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnEquipSkill').onclick = () => showScreen('equipSkill');
     document.getElementById('btnRecharge').onclick = openRecharge;
     document.getElementById('btnRechargeTop') && (document.getElementById('btnRechargeTop').onclick = openRecharge);
+    document.getElementById('btnWeaponShop').onclick = () => { renderWeaponShop(); showScreen('weaponShop'); };
+    document.getElementById('btnPetShop').onclick = () => { renderPetShop(); showScreen('petShop'); };
+    document.getElementById('btnBattle').onclick = () => { renderBattleScreen(); showScreen('battle'); };
 });
 
 let canvasMode = 'normal'; // normal | watching（联机副手看主机画面）
@@ -580,7 +675,10 @@ const screens = {
     online: document.getElementById('onlineScreen'),
     skillLib: document.getElementById('skillLibScreen'),
     equipSkill: document.getElementById('equipSkillScreen'),
-    recharge: document.getElementById('rechargeScreen')
+    recharge: document.getElementById('rechargeScreen'),
+    weaponShop: document.getElementById('weaponShopScreen'),
+    petShop: document.getElementById('petShopScreen'),
+    battle: document.getElementById('battleScreen')
 };
 
 // ========== 【💎 钻石充值系统（模拟，不真实扣款）】 ==========
@@ -596,52 +694,8 @@ const RECHARGE_PACKS = [
 ];
 let firstRecharge = true; // 演示版：首次充值任意档位额外+100%
 
-function openRecharge() { showScreen('recharge'); renderRecharge(); }
-function renderRecharge() {
-    const grid = document.getElementById('rechargeGrid');
-    const bal = document.getElementById('diamondBalance');
-    if (bal) bal.textContent = gameData.diamonds || 0;
-    if (!grid) return;
-    grid.innerHTML = RECHARGE_PACKS.map(p => {
-        let bonus = p.bonus;
-        if (firstRecharge) bonus += p.amt; // 首充100%
-        const bonusTxt = bonus > 0 ? `赠送 +${bonus.toLocaleString()} 💎` : '';
-        const cls = [p.hot?'best-value':'', p.svip?'super-saver':''].join(' ');
-        return `
-        <div class="recharge-card ${cls}" data-rid="${p.id}" style="--rc-from:${p.from};--rc-to:${p.to};">
-            ${p.svip ? `<div class="rc-hot-tag">🔥 顶级推荐</div>` : (p.hot?`<div class="rc-hot-tag">🔥 热门</div>`:'')}
-            ${bonus > p.bonus ? `<div class="rc-bonus-tag">首充×2</div>` : (p.best?`<div class="rc-bonus-tag">最超值</div>`:'')}
-            <div class="rc-diamond">
-                <span class="rc-ico">💎</span>
-                <span class="rc-amt">${p.amt.toLocaleString()}</span>
-            </div>
-            <div class="rc-name">${p.name}</div>
-            <div class="rc-bonus">${bonusTxt}</div>
-            <div class="rc-price" style="--rc-from:${p.from};--rc-to:${p.to};">¥ ${p.rmb}.00 立即充值</div>
-        </div>`;
-    }).join('');
-    grid.querySelectorAll('.recharge-card').forEach(c => c.addEventListener('click', () => doRecharge(c.dataset.rid)));
-}
-function doRecharge(packId) {
-    const p = RECHARGE_PACKS.find(x => x.id === packId);
-    if (!p) return;
-    let total = p.amt + p.bonus;
-    if (firstRecharge) total += p.amt;
-    AudioSys.play && AudioSys.play('buy');
-    // 模拟充值成功：撒花动画+钻石飘入余额
-    const old = gameData.diamonds || 0;
-    gameData.diamonds = old + total;
-    saveData();
-    // 到账提示
-    const firstTxt = firstRecharge ? '（含首充100%翻倍！）' : '';
-    showToast(`✅ 充值成功！¥${p.rmb} 获得 💎${total.toLocaleString()} ${firstTxt}`, 'success');
-    firstRecharge = false;
-    // 更新UI
-    const bal = document.getElementById('diamondBalance');
-    if (bal) bal.textContent = gameData.diamonds;
-    refreshMenuUI();
-    renderRecharge();
-}
+function openRecharge() { openDiamondExchange(); }
+function renderRecharge() { renderDiamondExchange(); }
 
 // ========== 【钻石消费：解锁皮肤/技能】 ==========
 function buyDiamondSkin(skinId) {
@@ -730,6 +784,452 @@ function buySkill(id) {
     showToast(`🎉 恭喜购买成功！【${s.name}】已永久拥有，释放免费！去装备吧~`, 'success');
     renderSkillLib(); refreshMenuUI();
 }
+
+// ========== 【武器系统 v3.0 辅助函数】 ==========
+function getWeapon(id) { return WEAPONS.find(w => w.id === id) || WEAPONS[0]; }
+function isDiamondWeapon(id) { const w = getWeapon(id); return !!w.isDiamond; }
+function isWeaponOwned(id) {
+    const w = getWeapon(id);
+    if (w.buyPrice === 0) return true;
+    if (w.isDiamond) return Array.isArray(gameData.unlockedDiamondWeapons) && gameData.unlockedDiamondWeapons.includes(id);
+    return Array.isArray(gameData.ownedWeapons) && gameData.ownedWeapons.includes(id);
+}
+function getWeaponEffect() { return getWeapon(gameData.currentWeapon || 'fist'); }
+function buyWeapon(id) {
+    const w = WEAPONS.find(x => x.id === id);
+    if (!w) return;
+    if (isWeaponOwned(id)) { showToast('这把武器你已经拥有啦！', 'success'); return; }
+    if (w.isDiamond) {
+        if ((gameData.diamonds||0) < w.diamondPrice) { showToast(`💎 钻石不够！需要 💎${w.diamondPrice}`, 'error'); return; }
+        AudioSys.play && AudioSys.play('buy');
+        gameData.diamonds -= w.diamondPrice;
+        if (!Array.isArray(gameData.unlockedDiamondWeapons)) gameData.unlockedDiamondWeapons = [];
+        gameData.unlockedDiamondWeapons.push(id);
+    } else {
+        if ((gameData.coins||0) < w.buyPrice) { showToast(`🪙 金币不够！购买【${w.name}】需要 🪙${w.buyPrice}`, 'error'); return; }
+        AudioSys.play && AudioSys.play('buy');
+        gameData.coins -= w.buyPrice;
+        if (!Array.isArray(gameData.ownedWeapons)) gameData.ownedWeapons = [];
+        gameData.ownedWeapons.push(id);
+    }
+    saveData();
+    showToast(`⚔️ 恭喜获得【${w.name}】！攻击+${w.attack} 暴击${Math.round(w.crit*100)}%`, 'success');
+    renderWeaponShop(); refreshMenuUI();
+}
+function equipWeapon(id) {
+    if (!isWeaponOwned(id)) { showToast('还没拥有这把武器！', 'error'); return; }
+    gameData.currentWeapon = id; saveData();
+    AudioSys.play && AudioSys.play('click');
+    const w = getWeapon(id);
+    showToast(`⚔️ 已装备【${w.name}】`, 'success');
+    renderWeaponShop();
+}
+
+// ========== 【宠物系统 v3.0 辅助函数】 ==========
+function getPet(id) { return PETS.find(p => p.id === id) || PETS[0]; }
+function isDiamondPet(id) { const p = getPet(id); return !!p.isDiamond; }
+function isPetOwned(id) {
+    const p = getPet(id);
+    if (p.buyPrice === 0) return true;
+    if (p.isDiamond) return Array.isArray(gameData.unlockedDiamondPets) && gameData.unlockedDiamondPets.includes(id);
+    return Array.isArray(gameData.ownedPets) && gameData.ownedPets.includes(id);
+}
+function getPetBonus() { return getPet(gameData.currentPet || 'none').bonus || {}; }
+function buyPet(id) {
+    const p = PETS.find(x => x.id === id);
+    if (!p) return;
+    if (isPetOwned(id)) { showToast('这只宠物你已经拥有啦！', 'success'); return; }
+    if (p.isDiamond) {
+        if ((gameData.diamonds||0) < p.diamondPrice) { showToast(`💎 钻石不够！需要 💎${p.diamondPrice}`, 'error'); return; }
+        AudioSys.play && AudioSys.play('buy');
+        gameData.diamonds -= p.diamondPrice;
+        if (!Array.isArray(gameData.unlockedDiamondPets)) gameData.unlockedDiamondPets = [];
+        gameData.unlockedDiamondPets.push(id);
+    } else {
+        if ((gameData.coins||0) < p.buyPrice) { showToast(`🪙 金币不够！购买【${p.name}】需要 🪙${p.buyPrice}`, 'error'); return; }
+        AudioSys.play && AudioSys.play('buy');
+        gameData.coins -= p.buyPrice;
+        if (!Array.isArray(gameData.ownedPets)) gameData.ownedPets = [];
+        gameData.ownedPets.push(id);
+    }
+    saveData();
+    showToast(`🐾 恭喜获得【${p.name}】！${p.desc}`, 'success');
+    renderPetShop(); refreshMenuUI();
+}
+function equipPet(id) {
+    if (!isPetOwned(id)) { showToast('还没拥有这只宠物！', 'error'); return; }
+    gameData.currentPet = id; saveData();
+    AudioSys.play && AudioSys.play('click');
+    const p = getPet(id);
+    showToast(`🐾 已携带【${p.name}】`, 'success');
+    renderPetShop();
+}
+
+// ========== 【武器商城渲染】 ==========
+function renderWeaponShop() {
+    const grid = document.getElementById('weaponShopGrid');
+    if (!grid) return;
+    grid.innerHTML = WEAPONS.map(w => {
+        const owned = isWeaponOwned(w.id);
+        const equipped = gameData.currentWeapon === w.id;
+        let action = '';
+        if (equipped) action = '<div class="shop-owned-badge">✓ 使用中</div>';
+        else if (owned) action = `<button class="shop-equip-btn" data-wequip="${w.id}">装备</button>`;
+        else if (w.isDiamond) {
+            const can = (gameData.diamonds||0) >= w.diamondPrice;
+            action = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-wbuy="${w.id}" ${can?'':'disabled'}>💎 ${w.diamondPrice} 购买</button>`;
+        } else {
+            const can = (gameData.coins||0) >= w.buyPrice;
+            action = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-wbuy="${w.id}" ${can?'':'disabled'}>🪙 ${w.buyPrice} 购买</button>`;
+        }
+        return `
+        <div class="shop-card ${equipped?'equipped':''} ${w.isDiamond?'diamond-card':''}">
+            <div class="shop-icon">${w.emoji}</div>
+            <h4>${w.name}</h4>
+            <div class="shop-desc">${w.desc}</div>
+            <div class="shop-stats">
+                <span>攻击：<b>+${w.attack}</b></span>
+                <span>暴击：<b>${Math.round(w.crit*100)}%</b></span>
+            </div>
+            ${action}
+        </div>`;
+    }).join('');
+    grid.querySelectorAll('[data-wbuy]').forEach(b => b.addEventListener('click', () => buyWeapon(b.dataset.wbuy)));
+    grid.querySelectorAll('[data-wequip]').forEach(b => b.addEventListener('click', () => equipWeapon(b.dataset.wequip)));
+}
+
+// ========== 【宠物商城渲染】 ==========
+function renderPetShop() {
+    const grid = document.getElementById('petShopGrid');
+    if (!grid) return;
+    grid.innerHTML = PETS.map(p => {
+        const owned = isPetOwned(p.id);
+        const equipped = gameData.currentPet === p.id;
+        let action = '';
+        if (equipped) action = '<div class="shop-owned-badge">✓ 携带中</div>';
+        else if (owned) action = `<button class="shop-equip-btn" data-pequip="${p.id}">携带</button>`;
+        else if (p.isDiamond) {
+            const can = (gameData.diamonds||0) >= p.diamondPrice;
+            action = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-pbuy="${p.id}" ${can?'':'disabled'}>💎 ${p.diamondPrice} 购买</button>`;
+        } else {
+            const can = (gameData.coins||0) >= p.buyPrice;
+            action = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-pbuy="${p.id}" ${can?'':'disabled'}>🪙 ${p.buyPrice} 购买</button>`;
+        }
+        const bonusKeys = Object.keys(p.bonus || {});
+        const bonusText = bonusKeys.length ? bonusKeys.map(k => {
+            const v = p.bonus[k];
+            const labels = { coinMul:'金币x'+v, scoreMul:'分数x'+v, extraHp:'+'+v+'心', cdMul:'CD-'+Math.round((1-v)*100)+'%', startShields:'开局'+v+'护盾', startMagnet:'开局磁铁' };
+            return labels[k] || k;
+        }).join(' / ') : '无加成';
+        return `
+        <div class="shop-card ${equipped?'equipped':''} ${p.isDiamond?'diamond-card':''}">
+            <div class="shop-icon">${p.emoji}</div>
+            <h4>${p.name}</h4>
+            <div class="shop-desc">${p.desc}</div>
+            <div class="shop-stats"><span>加成：<b>${bonusText}</b></span></div>
+            ${action}
+        </div>`;
+    }).join('');
+    grid.querySelectorAll('[data-pbuy]').forEach(b => b.addEventListener('click', () => buyPet(b.dataset.pbuy)));
+    grid.querySelectorAll('[data-pequip]').forEach(b => b.addEventListener('click', () => equipPet(b.dataset.pequip)));
+}
+
+// ========== 【好友P2P对战系统 v3.0】 ==========
+let battlePeer = null, battleConn = null, battleRoomId = '';
+let battleState = 'idle'; // idle / hosting / joined / fighting / ended
+let myBattleHp = 0, enemyBattleHp = 0;
+let battleCd = {}; // 技能CD
+const BATTLE_MAX_HP = 100;
+
+function renderBattleScreen() {
+    const el = document.getElementById('battleContent');
+    if (!el) return;
+    const w = getWeaponEffect();
+    const p = getPet(gameData.currentPet);
+    if (battleState === 'idle' || battleState === 'ended') {
+        battleState = 'idle';
+        el.innerHTML = `
+            <div class="battle-setup">
+                <div class="battle-info-card">
+                    <h3>⚔️ 好友乱斗</h3>
+                    <p>和朋友1v1对战！用武器和技能击败对手！</p>
+                    <div class="battle-loadout">
+                        <span>🗡️ 武器：${w.emoji} ${w.name}（攻击+${w.attack} 暴击${Math.round(w.crit*100)}%）</span>
+                        <span>🐾 宠物：${p.emoji} ${p.name}</span>
+                    </div>
+                </div>
+                <div class="battle-actions">
+                    <button class="big-btn" id="btnCreateBattle">🏠 创建对战房间</button>
+                    <div class="battle-join">
+                        <input type="text" id="battleRoomInput" placeholder="输入6位房间号" maxlength="6" pattern="[0-9]*" />
+                        <button class="big-btn" id="btnJoinBattle">🔗 加入对战</button>
+                    </div>
+                </div>
+                <div id="battleStatus" class="battle-status hidden"></div>
+                <div class="battle-rules">
+                    <h4>📜 对战规则</h4>
+                    <ul>
+                        <li>双方各100HP，攻击扣血</li>
+                        <li>伤害=武器攻击×2+随机，暴击×2</li>
+                        <li>可用已装备的2个技能（有冷却）</li>
+                        <li>HP归0判负，赢家+50金币</li>
+                    </ul>
+                </div>
+            </div>`;
+        document.getElementById('btnCreateBattle')?.addEventListener('click', createBattleRoom);
+        document.getElementById('btnJoinBattle')?.addEventListener('click', () => {
+            const rid = document.getElementById('battleRoomInput').value.trim();
+            joinBattleRoom(rid);
+        });
+    } else if (battleState === 'fighting') {
+        renderBattleArena(el);
+    }
+}
+
+function renderBattleArena(el) {
+    const w = getWeaponEffect();
+    const eqSkills = (gameData.equippedSkills||[]).map(id => SKILLS.find(s=>s.id===id)).filter(Boolean);
+    el.innerHTML = `
+        <div class="battle-arena">
+            <div class="battle-hud">
+                <div class="battle-hp-row">
+                    <div class="battle-hp-label">🧑 你 <span class="hp-num">${myBattleHp}</span></div>
+                    <div class="hp-bar"><div class="hp-fill my-hp" style="width:${myBattleHp}%"></div></div>
+                </div>
+                <div class="vs-text">⚔️ VS ⚔️</div>
+                <div class="battle-hp-row">
+                    <div class="battle-hp-label">👾 对手 <span class="hp-num">${enemyBattleHp}</span></div>
+                    <div class="hp-bar"><div class="hp-fill enemy-hp" style="width:${enemyBattleHp}%"></div></div>
+                </div>
+            </div>
+            <div class="battle-actions">
+                <button class="big-btn attack-btn" id="btnBattleAttack">⚔️ 攻击（${w.emoji}）</button>
+                <div class="battle-skills">
+                    ${eqSkills.map(s => `<button class="battle-skill-btn" id="bskill_${s.id}" data-skill="${s.id}">${s.emoji} ${s.name}</button>`).join('')}
+                </div>
+            </div>
+            <div id="battleLog" class="battle-log"></div>
+        </div>`;
+    document.getElementById('btnBattleAttack')?.addEventListener('click', battleAttack);
+    el.querySelectorAll('.battle-skill-btn').forEach(b => b.addEventListener('click', () => battleUseSkill(b.dataset.skill)));
+}
+
+function setBattleStatus(icon, title, desc, showRoom) {
+    const el = document.getElementById('battleStatus');
+    if (!el) return;
+    el.classList.remove('hidden');
+    el.innerHTML = `<div class="bs-icon">${icon}</div><div class="bs-text"><b>${title}</b><span>${desc}</span></div>${showRoom?`<div class="bs-room">房间号：<b>${battleRoomId}</b></div>`:''}`;
+}
+
+function createBattleRoom() {
+    if (typeof Peer === 'undefined') { showToast('⏳ 联机库加载中，请稍等几秒再试…', ''); return; }
+    destroyBattlePeer();
+    battleState = 'hosting';
+    battleRoomId = genRoomId();
+    setBattleStatus('⏳', '创建房间中...', '连接服务器...', false);
+    try {
+        battlePeer = new Peer('pkbattle_' + battleRoomId, { debug: 0 });
+    } catch(e) { setBattleStatus('❌', '创建失败', String(e), false); return; }
+    battlePeer.on('open', () => {
+        setBattleStatus('✅', '房间创建成功！', '把房间号发给好友，等TA加入！', true);
+    });
+    battlePeer.on('connection', conn => {
+        battleConn = conn;
+        bindBattleConn(conn);
+        setBattleStatus('🎊', '好友已加入！', '即将开始对战...', false);
+    });
+    battlePeer.on('error', err => {
+        setBattleStatus('❌', '错误', String(err && err.type || err), false);
+        if (String(err && err.type) === 'unavailable-id') setBattleStatus('❌', '房间号被占用', '请重新创建', false);
+    });
+}
+
+function joinBattleRoom(roomId) {
+    if (typeof Peer === 'undefined') { showToast('⏳ 联机库加载中，请稍等几秒再试…', ''); return; }
+    if (!/^\d{6}$/.test(roomId)) { showToast('请输入6位纯数字房间号', 'error'); return; }
+    destroyBattlePeer();
+    battleState = 'joined';
+    battleRoomId = roomId;
+    setBattleStatus('⏳', '加入房间中...', '连接服务器...', false);
+    try {
+        battlePeer = new Peer({ debug: 0 });
+    } catch(e) { setBattleStatus('❌', '加入失败', String(e), false); return; }
+    battlePeer.on('open', () => {
+        try {
+            battleConn = battlePeer.connect('pkbattle_' + roomId, { reliable: true });
+            bindBattleConn(battleConn);
+            setBattleStatus('🔗', '连接中...', '等待对方响应...', false);
+            setTimeout(() => { if (battleConn && !battleConn.open) setBattleStatus('❌', '加入失败', '连接超时，检查房间号', false); }, 10000);
+        } catch(e) { setBattleStatus('❌', '加入失败', String(e), false); }
+    });
+    battlePeer.on('error', err => setBattleStatus('❌', '错误', String(err && err.type || err), false));
+}
+
+function bindBattleConn(conn) {
+    conn.on('open', () => {
+        battleState = 'fighting';
+        myBattleHp = BATTLE_MAX_HP; enemyBattleHp = BATTLE_MAX_HP;
+        battleCd = {};
+        const el = document.getElementById('battleContent');
+        if (el) renderBattleArena(el);
+        AudioSys.play && AudioSys.play('click');
+        addBattleLog('对战开始！准备好战斗吧！');
+        // 主机先告诉对方已连接
+        sendBattleMsg({ type: 'ready' });
+    });
+    conn.on('data', onBattleMsg);
+    conn.on('close', () => { addBattleLog('对手断开了连接'); battleState = 'ended'; setTimeout(()=>renderBattleScreen(),1500); });
+    conn.on('error', () => { addBattleLog('连接出错'); });
+}
+
+function sendBattleMsg(obj) {
+    if (battleConn && battleConn.open) try { battleConn.send(obj); } catch(e){}
+}
+
+function onBattleMsg(data) {
+    if (!data) return;
+    switch (data.type) {
+        case 'ready':
+            addBattleLog('对手已连接，开战！');
+            break;
+        case 'attack':
+            const dmg = data.dmg || 0;
+            const isCrit = data.crit || false;
+            myBattleHp = Math.max(0, myBattleHp - dmg);
+            addBattleLog(`${isCrit?'💥暴击！':'⚔️'}对手攻击你，-${dmg} HP！`);
+            updateBattleHpUI();
+            if (myBattleHp <= 0) endBattle(false);
+            break;
+        case 'skill':
+            const sdmg = data.dmg || 0;
+            const sname = data.name || '技能';
+            const sheal = data.heal || 0;
+            if (sheal > 0) {
+                enemyBattleHp = Math.min(BATTLE_MAX_HP, enemyBattleHp + sheal);
+                addBattleLog(`✨对手用${sname}恢复了${sheal}HP！`);
+            }
+            if (sdmg > 0) {
+                myBattleHp = Math.max(0, myBattleHp - sdmg);
+                addBattleLog(`💥对手用${sname}打你-${sdmg}HP！`);
+                if (myBattleHp <= 0) endBattle(false);
+            }
+            updateBattleHpUI();
+            break;
+        case 'heal':
+            // 自己HP已经被扣了，这里是对手治疗自己（在skill里处理）
+            break;
+        case 'surrender':
+            addBattleLog('🏳️ 对手投降了！你赢了！');
+            endBattle(true);
+            break;
+    }
+}
+
+function battleAttack() {
+    if (battleState !== 'fighting') return;
+    const w = getWeaponEffect();
+    const baseDmg = 8 + w.attack * 2;
+    const variance = Math.floor(Math.random() * 6) - 3; // -3 ~ +2
+    let dmg = Math.max(1, baseDmg + variance);
+    const isCrit = Math.random() < w.crit;
+    if (isCrit) dmg *= 2;
+    sendBattleMsg({ type: 'attack', dmg, crit: isCrit });
+    enemyBattleHp = Math.max(0, enemyBattleHp - dmg);
+    addBattleLog(`${isCrit?'💥暴击！':'⚔️'}你攻击对手，造成${dmg}伤害！`);
+    updateBattleHpUI();
+    AudioSys.play && AudioSys.play('hit');
+    if (enemyBattleHp <= 0) endBattle(true);
+}
+
+function battleUseSkill(skillId) {
+    if (battleState !== 'fighting') return;
+    const s = SKILLS.find(x => x.id === skillId);
+    if (!s) return;
+    if (!isSkillOwned(skillId)) { showToast(`还没拥有【${s.name}】！`, 'error'); return; }
+    if (!isSkillEquipped(skillId)) { showToast(`【${s.name}】本局未装备！`, 'error'); return; }
+    const now = Date.now();
+    if ((battleCd[skillId] || 0) > now) { showToast(`${s.emoji} ${s.name} 还在冷却中！`, ''); return; }
+    const cdEff = (getSkinEffect(gameData.currentSkin).cdMul || 1) * (getPetBonus().cdMul || 1);
+    battleCd[skillId] = now + Math.floor(s.cd * cdEff * 1000);
+    // 战斗中的技能效果
+    let dmg = 0, heal = 0;
+    switch (skillId) {
+        case 'fire': case 'bolt': case 'strike': case 'rage':
+            dmg = 20 + Math.floor(Math.random() * 15); break;
+        case 'ice': case 'slow': case 'timestop': case 'wind':
+            dmg = 10; break; // 控制技能伤害较低
+        case 'heal': case 'healmax':
+            heal = 30; myBattleHp = Math.min(BATTLE_MAX_HP, myBattleHp + heal); break;
+        case 'meteor': case 'genesis':
+            dmg = 40 + Math.floor(Math.random() * 20); break;
+        case 'shield': case 'teleport': case 'double': case 'dash':
+            dmg = 5; break;
+        case 'rain':
+            heal = 15; myBattleHp = Math.min(BATTLE_MAX_HP, myBattleHp + heal); break;
+        case 'triple': case 'pet': case 'whirl':
+            dmg = 15; break;
+        default: dmg = 10;
+    }
+    if (dmg > 0) {
+        enemyBattleHp = Math.max(0, enemyBattleHp - dmg);
+        sendBattleMsg({ type: 'skill', name: s.name, dmg });
+        addBattleLog(`✨你释放${s.emoji}${s.name}！对对手造成${dmg}伤害！`);
+    }
+    if (heal > 0) {
+        sendBattleMsg({ type: 'skill', name: s.name, heal });
+        addBattleLog(`✨你释放${s.emoji}${s.name}！恢复${heal}HP！`);
+    }
+    updateBattleHpUI();
+    AudioSys.play && AudioSys.play('click');
+    if (enemyBattleHp <= 0) endBattle(true);
+}
+
+function updateBattleHpUI() {
+    document.querySelectorAll('.hp-num').forEach((el, i) => {
+        if (i === 0) el.textContent = myBattleHp;
+        if (i === 1) el.textContent = enemyBattleHp;
+    });
+    const myBar = document.querySelector('.my-hp');
+    const enBar = document.querySelector('.enemy-hp');
+    if (myBar) myBar.style.width = myBattleHp + '%';
+    if (enBar) enBar.style.width = enemyBattleHp + '%';
+}
+
+function addBattleLog(msg) {
+    const el = document.getElementById('battleLog');
+    if (!el) return;
+    const line = document.createElement('div');
+    line.className = 'battle-log-line';
+    line.textContent = msg;
+    el.appendChild(line);
+    el.scrollTop = el.scrollHeight;
+}
+
+function endBattle(iWon) {
+    battleState = 'ended';
+    if (iWon) {
+        gameData.coins = (gameData.coins||0) + 50;
+        saveData();
+        addBattleLog('🎉 你赢了！获得50金币奖励！');
+        AudioSys.play && AudioSys.play('ach');
+    } else {
+        addBattleLog('💀 你输了...再接再厉！');
+        AudioSys.play && AudioSys.play('gameover');
+    }
+    sendBattleMsg({ type: iWon ? 'surrender' : 'surrender' }); // 通知对方
+    setTimeout(() => {
+        destroyBattlePeer();
+        renderBattleScreen();
+        refreshMenuUI();
+    }, 3000);
+}
+
+function destroyBattlePeer() {
+    try { battleConn && battleConn.close(); } catch(e){}
+    try { battlePeer && battlePeer.destroy(); } catch(e){}
+    battlePeer = null; battleConn = null; battleState = 'idle';
+}
+
 function isDiamondSkinUnlocked(id) {
     if (!isDiamondSkin(id)) return true;
     return Array.isArray(gameData.unlockedDiamondSkins) && gameData.unlockedDiamondSkins.includes(id);
@@ -914,7 +1414,10 @@ function showScreen(name) {
     if (name === 'ach')  renderAchievements();
     if (name === 'skillLib') renderSkillLib();
     if (name === 'equipSkill') renderEquipSkill();
-    if (name === 'recharge') renderRecharge();
+    if (name === 'recharge') renderDiamondExchange();
+    if (name === 'weaponShop') renderWeaponShop();
+    if (name === 'petShop') renderPetShop();
+    if (name === 'battle') renderBattleScreen();
     if (name === 'game') {
         ensureEquippedValid();
         if (!isOnlineHelper) startGame();
@@ -926,8 +1429,9 @@ document.querySelectorAll('.back-btn').forEach(btn => {
     btn.addEventListener('click', () => showScreen(btn.dataset.back || 'menu'));
 });
 
-// ========== 【数据系统（保持不变）】 ==========
-const SAVE_KEY = 'parkour_deluxe_save_v2';
+// ========== 【数据系统 v3.0（含武器/宠物/赛季）】 ==========
+const SAVE_KEY = 'parkour_deluxe_save_v4'; // v4: 全服数据重置（钻石改金币兑换）
+const SEASON_MS = 90 * 24 * 60 * 60 * 1000; // 赛季：90天（约3个月）
 const DEFAULT_DATA = {
     coins: 50, highScore: 0, totalGames: 0, totalCoinsEarned: 0, maxCombo: 0,
     diamonds: 0, // 💎 钻石：充值获得，用于解锁稀有角色和神级技能
@@ -935,11 +1439,25 @@ const DEFAULT_DATA = {
     unlockedDiamondSkins: [], // 已用钻石解锁的皮肤ID
     unlockedDiamondSkills: [], // 已用钻石解锁的钻石专属技能ID
     ownedSkills: ['fire','dash'], // 已用金币购买的普通技能ID（买了永久免费释放）
+    // ===== v3.0 武器系统 =====
+    ownedWeapons: ['fist'], currentWeapon: 'fist',
+    unlockedDiamondWeapons: [], // 钻石武器解锁列表
+    // ===== v3.0 宠物系统 =====
+    ownedPets: ['none'], currentPet: 'none',
+    unlockedDiamondPets: [], // 钻石宠物解锁列表
+    // ===== v3.0 赛季制 =====
+    seasonStart: Date.now(), // 本赛季开始时间
+    // ===== v4.0 奖杯 + 世界系统 =====
+    trophies: 0,           // 奖杯数量（单局达20000金币得1个）
+    currentWorld: 1,       // 当前世界：1=草地 2=宇宙（100奖杯解锁）
+    worldUnlocked: { 1: true, 2: false }, // 世界解锁状态
+    // ===== 以下保持不变 =====
     items: { shield: 2, magnet: 1, revive: 1, double: 1 },
     achievements: {},
     settings: { musicVol: 60, soundVol: 80, musicOn: true, soundOn: true, shakeOn: true, particlesOn: true, defaultDiff: 'normal' },
     currentDiff: 'normal', diffsPlayed: {},
-    equippedSkills: ['fire', 'dash'] // 默认装备：🔥火焰冲击 + 💨加速冲刺
+    equippedSkills: ['fire', 'dash'], // 默认装备：🔥火焰冲击 + 💨加速冲刺
+    bossKilled: 0
 };
 function loadData() {
     try {
@@ -948,12 +1466,25 @@ function loadData() {
         const base = JSON.parse(JSON.stringify(DEFAULT_DATA));
         // 合并基础字段
         const data = Object.assign(base, loaded);
-        // 确保新增钻石字段一定存在（兼容老存档）
+        // 确保新增字段一定存在（兼容老存档）
         if (typeof data.diamonds !== 'number') data.diamonds = base.diamonds || 0;
         if (!Array.isArray(data.unlockedDiamondSkins)) data.unlockedDiamondSkins = [];
         if (!Array.isArray(data.unlockedDiamondSkills)) data.unlockedDiamondSkills = [];
         if (!Array.isArray(data.ownedSkills)) data.ownedSkills = [...(base.ownedSkills||[])];
         if (!Array.isArray(data.equippedSkills)) data.equippedSkills = [...(base.equippedSkills||[])];
+        // v3.0 新字段兼容
+        if (!Array.isArray(data.ownedWeapons)) data.ownedWeapons = ['fist'];
+        if (!data.currentWeapon) data.currentWeapon = 'fist';
+        if (!Array.isArray(data.unlockedDiamondWeapons)) data.unlockedDiamondWeapons = [];
+        if (!Array.isArray(data.ownedPets)) data.ownedPets = ['none'];
+        if (!data.currentPet) data.currentPet = 'none';
+        if (!Array.isArray(data.unlockedDiamondPets)) data.unlockedDiamondPets = [];
+        if (typeof data.seasonStart !== 'number') data.seasonStart = Date.now();
+        if (typeof data.bossKilled !== 'number') data.bossKilled = 0;
+        // v4.0 新字段兼容
+        if (typeof data.trophies !== 'number') data.trophies = 0;
+        if (typeof data.currentWorld !== 'number') data.currentWorld = 1;
+        if (!data.worldUnlocked || typeof data.worldUnlocked !== 'object') data.worldUnlocked = { 1: true, 2: false };
         return data;
     } catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
 }
@@ -961,6 +1492,23 @@ function saveData() { localStorage.setItem(SAVE_KEY, JSON.stringify(gameData)); 
 let gameData = loadData();
 ensureEquippedValid(); // 在 gameData 初始化后校验已装备技能
 let tempEquipped = []; // 技能装备界面里的临时选择
+
+// ========== 【赛季清空检查】 ==========
+// 每过3个月自动清空所有数据（保留钻石充值记录 & 成就）
+function checkSeasonReset() {
+    const now = Date.now();
+    if (gameData.seasonStart && (now - gameData.seasonStart < SEASON_MS)) return; // 还没到3个月
+    // 赛季结束：清空进度
+    const keepDiamonds = gameData.diamonds || 0;
+    const keepAch = gameData.achievements || {};
+    gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    gameData.diamonds = keepDiamonds; // 保留钻石
+    gameData.achievements = keepAch;  // 保留成就
+    gameData.seasonStart = now;       // 新赛季开始
+    saveData();
+    showToast('🏆 新赛季开始！所有进度已重置（钻石和成就保留）', 'gold');
+}
+checkSeasonReset(); // 启动时检查
 
 // ========== 【音乐系统（新增技能音效）】 ==========
 const AudioSys = {
@@ -1084,6 +1632,10 @@ function renderActiveBuffs() {
         else if (k === 'slow') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#fab1a0,#e17055)">⏳ 减速 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
         else if (k === 'triple') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#ff7675,#d63031)">🦘 三段跳 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
         else if (k === 'pet') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#ff9ff3,#f368e0)">🐦 宠物 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
+        else if (k === 'doubleScore') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#ffeaa7,#fdcb6e)">🌟 双倍分 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
+        else if (k === 'rage') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#ff7675,#d63031)">😤 狂暴 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
+        else if (k === 'wind') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#55efc4,#00b894)">🍃 风之翼 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
+        else if (k === 'timestop') box.innerHTML += `<div class="buff-chip" style="background:linear-gradient(135deg,#fab1a0,#e17055)">⏱️ 时间停止 ${Math.ceil(Math.max(0,(activeBuffs[k].end-Date.now())/1000))}s</div>`;
         else if (it) {
             const sec = (k==='magnet') ? Math.max(0,Math.ceil((activeBuffs[k].end-Date.now())/1000)) : null;
             box.innerHTML += `<div class="buff-chip">${it.emoji} ${it.name}${sec?` ${sec}s`:''}</div>`;
@@ -1097,15 +1649,33 @@ document.querySelectorAll('.item-slot').forEach(slot => slot.addEventListener('c
 const ACHIEVEMENTS = [
     { id:'first_run', name:'初出茅庐', icon:'🏁', desc:'完成第一局游戏', reward:30, check:d=>d.totalGames>=1 },
     { id:'coin_100', name:'小小富翁', icon:'💵', desc:'累计获得100金币', reward:50, check:d=>d.totalCoinsEarned>=100 },
-    { id:'coin_1000', name:'金币大亨', icon:'💎', desc:'累计获得1000金币', reward:200, check:d=>d.totalCoinsEarned>=1000 },
+    { id:'coin_1000', name:'金币大亨', icon:'💰', desc:'累计获得1000金币', reward:200, check:d=>d.totalCoinsEarned>=1000 },
+    { id:'coin_5000', name:'富可敌国', icon:'🏦', desc:'累计获得5000金币', reward:500, check:d=>d.totalCoinsEarned>=5000 },
     { id:'score_500', name:'跑酷新手', icon:'🥉', desc:'单局得分达500', reward:60, check:d=>d.highScore>=500 },
     { id:'score_2000', name:'跑酷达人', icon:'🥈', desc:'单局得分达2000', reward:200, check:d=>d.highScore>=2000 },
     { id:'score_5000', name:'传奇跑者', icon:'🥇', desc:'单局得分达5000', reward:500, check:d=>d.highScore>=5000 },
+    { id:'score_10000', name:'神话跑者', icon:'👑', desc:'单局得分达10000', reward:1000, check:d=>d.highScore>=10000 },
     { id:'games_10', name:'坚持不懈', icon:'💪', desc:'累计游戏10局', reward:80, check:d=>d.totalGames>=10 },
     { id:'games_50', name:'游戏狂热', icon:'🎮', desc:'累计游戏50局', reward:300, check:d=>d.totalGames>=50 },
+    { id:'games_100', name:'百年传奇', icon:'🎯', desc:'累计游戏100局', reward:800, check:d=>d.totalGames>=100 },
     { id:'buy_skin', name:'时尚达人', icon:'👕', desc:'购买一款皮肤', reward:100, check:d=>d.ownedSkins.length>=2 },
     { id:'all_diff', name:'全能战士', icon:'⚔️', desc:'在三种难度各玩一局', reward:150, check:d=>d.diffsPlayed?.easy&&d.diffsPlayed?.normal&&d.diffsPlayed?.hard },
-    { id:'kill_boss', name:'屠龙勇士', icon:'🐉', desc:'击杀第一个关卡BOSS', reward:200, check:d=>d.bossKilled>=1 }
+    { id:'kill_boss', name:'屠龙勇士', icon:'🐉', desc:'击杀第一个关卡BOSS', reward:200, check:d=>d.bossKilled>=1 },
+    // ===== v3.0 新增成就 =====
+    { id:'buy_skill', name:'技能收藏家', icon:'📚', desc:'购买3个技能', reward:150, check:d=>(d.ownedSkills||[]).length>=5 },
+    { id:'buy_all_skills', name:'全技能大师', icon:'🎓', desc:'购买全部普通技能', reward:500, check:d=>SKILLS.filter(s=>!s.isDiamond).every(s=>(d.ownedSkills||[]).includes(s.id)) },
+    { id:'buy_weapon', name:'初入兵器谱', icon:'🗡️', desc:'购买第一把武器', reward:100, check:d=>(d.ownedWeapons||[]).length>=2 },
+    { id:'buy_pet', name:'萌宠之友', icon:'🐾', desc:'购买第一只宠物', reward:100, check:d=>(d.ownedPets||[]).length>=2 },
+    { id:'equip_diamond', name:'至尊装备', icon:'💎', desc:'装备任意钻石武器/宠物/皮肤', reward:300, check:d=>{
+        const dw = d.unlockedDiamondWeapons && d.unlockedDiamondWeapons.length > 0;
+        const dp = d.unlockedDiamondPets && d.unlockedDiamondPets.length > 0;
+        const ds = d.unlockedDiamondSkins && d.unlockedDiamondSkins.length > 0;
+        return dw || dp || ds;
+    }},
+    { id:'recharge', name:'充值达人', icon:'💳', desc:'完成第一次充值', reward:0, check:d=>(d.diamonds||0)>0 || (d.totalRecharged||0)>0 },
+    { id:'combo_10', name:'连击高手', icon:'🔥', desc:'达成10连击', reward:100, check:d=>(d.maxCombo||0)>=10 },
+    { id:'combo_30', name:'连击狂魔', icon:'🌋', desc:'达成30连击', reward:300, check:d=>(d.maxCombo||0)>=30 },
+    { id:'diamond_skill', name:'神技降世', icon:'🌌', desc:'解锁一个钻石神技', reward:400, check:d=>(d.unlockedDiamondSkills||[]).length>=1 }
 ];
 function checkAchievements() {
     ACHIEVEMENTS.forEach(a => { if (!gameData.achievements[a.id] && a.check(gameData)) { gameData.achievements[a.id]=true; gameData.coins+=a.reward; AudioSys.play('ach'); showToast(`🏅 成就解锁：${a.name}！+🪙${a.reward}`, 'gold'); } });
@@ -1240,11 +1810,18 @@ function refreshMenuUI() {
     document.getElementById('menuHighScore').textContent = gameData.highScore;
     const lv = Math.min(99, 1 + Math.floor((gameData.highScore||0)/500));
     document.getElementById('playerLevel').textContent = 'Lv.' + lv;
+    const trEl = document.getElementById('menuTrophies'); if (trEl) trEl.textContent = gameData.trophies || 0;
     document.getElementById('diffLabel').textContent = DIFFS[selectedDiff]?.name || '普通';
     document.getElementById('musicIcon').textContent = gameData.settings.musicOn ? '🔊' : '🔇';
     document.getElementById('soundIcon').textContent = gameData.settings.soundOn ? '🔊' : '🔇';
     const tag = document.querySelector('.equip-tag');
     if (tag) tag.textContent = `${(gameData.equippedSkills||[]).length}/2`;
+    // v3.0 商城金币显示
+    const wEl = document.getElementById('weaponCoins'); if (wEl) wEl.textContent = gameData.coins;
+    const pEl = document.getElementById('petCoins'); if (pEl) pEl.textContent = gameData.coins;
+    const bEl = document.getElementById('battleCoins'); if (bEl) bEl.textContent = gameData.coins;
+    // v4.0 世界信息
+    renderWorldInfo();
 }
 document.getElementById('btnDifficulty').onclick = () => {
     document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === selectedDiff));
@@ -1319,7 +1896,8 @@ const player = {
         }
     },
     update() {
-        this.vy += GRAVITY; this.y += this.vy;
+        const g = hasBuff('wind') ? GRAVITY * 0.4 : GRAVITY; // 🍃 风之翼：重力-60%
+        this.vy += g; this.y += this.vy;
         if (this.y >= GROUND_Y) { this.y = GROUND_Y; this.vy = 0; this.onGround = true; this.jumpCount = 0; }
         if (this.onGround && gameState === 'playing') this.runFrame += 0.3;
     },
@@ -1395,6 +1973,67 @@ function drawObstacles() {
     });
 }
 
+// ========== 【世界切换 & 钻石兑换 v4.0】 ==========
+function switchWorld(worldId) {
+    if (!gameData.worldUnlocked?.[worldId]) {
+        if (worldId === 2) showToast('🔒 需要集满100个奖杯才能解锁宇宙世界！', 'error');
+        return;
+    }
+    gameData.currentWorld = worldId;
+    saveData();
+    const w = WORLD_CONFIG[worldId];
+    showToast(`已切换到 ${w.name}！`, 'success');
+    refreshMenuUI();
+}
+function renderWorldInfo() {
+    const el = document.getElementById('worldInfo');
+    if (!el) return;
+    const w = getWorldCfg();
+    const w2Unlocked = gameData.worldUnlocked?.[2];
+    el.innerHTML = `
+        <div class="world-current">${w.name} | 🏆 ${gameData.trophies||0}/100</div>
+        <div class="world-switch">
+            <button class="world-btn ${gameData.currentWorld===1?'active':''}" data-world="1">🌍 世界一</button>
+            <button class="world-btn ${gameData.currentWorld===2?'active':''} ${w2Unlocked?'':'locked'}" data-world="2">🌌 世界二 ${w2Unlocked?'':'🔒(需100🏆)'}</button>
+        </div>`;
+    el.querySelectorAll('[data-world]').forEach(b => b.addEventListener('click', () => switchWorld(parseInt(b.dataset.world))));
+}
+// 钻石兑换：100金币=1钻石
+function renderDiamondExchange() {
+    const el = document.getElementById('rechargeGrid');
+    if (!el) return;
+    const coins = gameData.coins || 0;
+    const diamonds = gameData.diamonds || 0;
+    const packs = [1, 5, 10, 20, 50, 100];
+    el.innerHTML = packs.map(n => {
+        const cost = n * 100;
+        const can = coins >= cost;
+        return `<div class="exchange-card ${can?'':'disabled'}">
+            <div class="ex-icon">💎</div>
+            <div class="ex-amount">${n} 钻石</div>
+            <div class="ex-cost">需要 🪙 ${cost}</div>
+            <button class="ex-btn ${can?'':'disabled'}" data-exchange="${n}" ${can?'':'disabled'}>兑换</button>
+        </div>`;
+    }).join('');
+    el.querySelectorAll('[data-exchange]').forEach(b => b.addEventListener('click', () => exchangeDiamonds(parseInt(b.dataset.exchange))));
+    // 更新余额
+    const bal = document.getElementById('diamondBalance');
+    if (bal) bal.textContent = diamonds;
+    const cEl = document.getElementById('rechargeCoins');
+    if (cEl) cEl.textContent = coins;
+}
+function exchangeDiamonds(amount) {
+    const cost = amount * 100;
+    if ((gameData.coins||0) < cost) { showToast(`🪙 金币不够！兑换${amount}钻石需要${cost}金币`, 'error'); return; }
+    AudioSys.play && AudioSys.play('buy');
+    gameData.coins -= cost;
+    gameData.diamonds = (gameData.diamonds||0) + amount;
+    saveData();
+    showToast(`🎉 兑换成功！获得 ${amount} 💎，花了 ${cost} 🪙`, 'success');
+    renderDiamondExchange(); refreshMenuUI();
+}
+function openDiamondExchange() { renderDiamondExchange(); showScreen('recharge'); }
+
 // 金币
 function spawnCoin() {
     const heights = [GROUND_Y-50, GROUND_Y-120, GROUND_Y-190, GROUND_Y-260];
@@ -1434,41 +2073,80 @@ function addShieldParticle() { if (!particles) particles=[]; for (let i=0;i<16;i
 
 function shadeColor(color, percent) { const num = parseInt(color.replace('#',''),16); const amt = Math.round(2.55*percent); const R = Math.max(0, Math.min(255, (num>>16)+amt)); const G = Math.max(0, Math.min(255, ((num>>8)&0xff)+amt)); const B = Math.max(0, Math.min(255, (num&0xff)+amt)); return '#'+(0x1000000+R*0x10000+G*0x100+B).toString(16).slice(1); }
 
+// ========== 【世界主题配置】 ==========
+const WORLD_CONFIG = {
+    1: { // 草地世界
+        sky: ['#74b9ff','#a29bfe','#dfe6e9'], sun: '#ffeaa7',
+        cloud: 'rgba(255,255,255,0.9)', ground1: '#55efc4', ground2: '#6c5ce7', ground3: '#5f4fcf',
+        grass: '#00b894', style: 'grass', name: '🌍 草地世界'
+    },
+    2: { // 宇宙世界
+        sky: ['#0a0a2e','#1a1a4e','#16213e'], sun: '#e74c3c',
+        cloud: 'rgba(255,255,255,0.4)', ground1: '#2d3436', ground2: '#636e72', ground3: '#2d3436',
+        grass: '#a4b0be', style: 'space', name: '🌌 宇宙世界'
+    }
+};
+function getWorldCfg() { return WORLD_CONFIG[gameData.currentWorld] || WORLD_CONFIG[1]; }
+let stars = [];
 function initBackground() {
-    clouds=[]; buildings=[]; groundTiles=[];
+    clouds=[]; buildings=[]; groundTiles=[]; stars=[];
     for (let i = 0; i < 6; i++) clouds.push({ x:Math.random()*canvas.width, y:40+Math.random()*160, size:30+Math.random()*40, speed:0.3+Math.random()*0.3 });
     for (let i = 0; i < 9; i++) buildings.push({ x:i*140+Math.random()*30, width:85+Math.random()*55, height:120+Math.random()*140, color:`hsl(${220+Math.random()*30},30%,${30+Math.random()*15}%)` });
     for (let i = 0; i < Math.ceil(canvas.width/50)+2; i++) groundTiles.push({ x:i*50 });
+    for (let i = 0; i < 80; i++) stars.push({ x:Math.random()*canvas.width, y:Math.random()*(GROUND_Y+30), r:Math.random()*1.8+0.4, tw:Math.random()*Math.PI*2 });
 }
 
 function drawBackground() {
+    const w = getWorldCfg();
     const sg = ctx.createLinearGradient(0,0,0,canvas.height);
-    sg.addColorStop(0,'#74b9ff'); sg.addColorStop(0.5,'#a29bfe'); sg.addColorStop(1,'#dfe6e9');
+    sg.addColorStop(0, w.sky[0]); sg.addColorStop(0.5, w.sky[1]); sg.addColorStop(1, w.sky[2]);
     ctx.fillStyle = sg; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#ffeaa7'; ctx.beginPath(); ctx.arc(canvas.width-130,90,50,0,Math.PI*2); ctx.fill();
-    clouds.forEach(c => {
-        ctx.save(); ctx.fillStyle='rgba(255,255,255,0.9)';
-        const s = c.size;
-        ctx.beginPath(); ctx.arc(c.x,c.y,s*0.5,0,Math.PI*2); ctx.arc(c.x+s*0.4,c.y-s*0.2,s*0.4,0,Math.PI*2); ctx.arc(c.x+s*0.8,c.y,s*0.45,0,Math.PI*2); ctx.arc(c.x+s*0.4,c.y+s*0.15,s*0.35,0,Math.PI*2); ctx.fill(); ctx.restore();
-        if (gameState==='playing') c.x -= c.speed;
-        if (c.x < -120) { c.x = canvas.width+60; c.y = 40+Math.random()*160; }
-    });
-    buildings.forEach(b => {
-        ctx.fillStyle = b.color;
-        ctx.fillRect(b.x, GROUND_Y+70-b.height, b.width, b.height);
-        ctx.fillStyle = 'rgba(255,255,180,0.4)';
-        const rows = Math.floor(b.height/28), cols = Math.floor(b.width/22);
-        for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) ctx.fillRect(b.x+10+c*22, GROUND_Y+70-b.height+18+r*28, 9, 14);
-        if (gameState==='playing') b.x -= gameSpeed*0.2;
-        if (b.x < -b.width) { b.x = canvas.width+30; b.width = 85+Math.random()*55; b.height = 120+Math.random()*140; }
-    });
+    // 太阳/星球
+    ctx.fillStyle = w.sun; ctx.beginPath(); ctx.arc(canvas.width-130,90,50,0,Math.PI*2); ctx.fill();
+    if (w.style === 'space') {
+        // 宇宙：画星星
+        ctx.fillStyle = '#fff';
+        stars.forEach(s => {
+            const a = 0.4 + Math.abs(Math.sin(frameCount*0.05 + s.tw)) * 0.6;
+            ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+        // 画外星柱子代替建筑
+        buildings.forEach(b => {
+            ctx.fillStyle = '#6c5ce7';
+            ctx.fillRect(b.x, GROUND_Y+70-b.height, b.width*0.5, b.height);
+            ctx.fillStyle = '#a29bfe';
+            ctx.fillRect(b.x-5, GROUND_Y+70-b.height-15, b.width*0.5+10, 15);
+            if (gameState==='playing') b.x -= gameSpeed*0.2;
+            if (b.x < -b.width) { b.x = canvas.width+30; b.height = 120+Math.random()*140; }
+        });
+    } else {
+        // 草地：云 + 建筑
+        clouds.forEach(c => {
+            ctx.save(); ctx.fillStyle = w.cloud;
+            const s = c.size;
+            ctx.beginPath(); ctx.arc(c.x,c.y,s*0.5,0,Math.PI*2); ctx.arc(c.x+s*0.4,c.y-s*0.2,s*0.4,0,Math.PI*2); ctx.arc(c.x+s*0.8,c.y,s*0.45,0,Math.PI*2); ctx.arc(c.x+s*0.4,c.y+s*0.15,s*0.35,0,Math.PI*2); ctx.fill(); ctx.restore();
+            if (gameState==='playing') c.x -= c.speed;
+            if (c.x < -120) { c.x = canvas.width+60; c.y = 40+Math.random()*160; }
+        });
+        buildings.forEach(b => {
+            ctx.fillStyle = b.color;
+            ctx.fillRect(b.x, GROUND_Y+70-b.height, b.width, b.height);
+            ctx.fillStyle = 'rgba(255,255,180,0.4)';
+            const rows = Math.floor(b.height/28), cols = Math.floor(b.width/22);
+            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) ctx.fillRect(b.x+10+c*22, GROUND_Y+70-b.height+18+r*28, 9, 14);
+            if (gameState==='playing') b.x -= gameSpeed*0.2;
+            if (b.x < -b.width) { b.x = canvas.width+30; b.width = 85+Math.random()*55; b.height = 120+Math.random()*140; }
+        });
+    }
 }
 function drawGround() {
-    ctx.fillStyle = '#55efc4'; ctx.fillRect(0, GROUND_Y+35, canvas.width, 35);
-    ctx.fillStyle = '#6c5ce7'; ctx.fillRect(0, GROUND_Y+58, canvas.width, canvas.height);
-    ctx.fillStyle = '#5f4fcf';
+    const w = getWorldCfg();
+    ctx.fillStyle = w.ground1; ctx.fillRect(0, GROUND_Y+35, canvas.width, 35);
+    ctx.fillStyle = w.ground2; ctx.fillRect(0, GROUND_Y+58, canvas.width, canvas.height);
+    ctx.fillStyle = w.ground3;
     for (let i = 0; i < 35; i++) { const x = ((i*37-frameCount*gameSpeed)%(canvas.width+40))-20; ctx.fillRect(x, GROUND_Y+75, 7, 5); ctx.fillRect(x+17, GROUND_Y+92, 5, 4); }
-    ctx.strokeStyle = '#00b894'; ctx.lineWidth=2;
+    ctx.strokeStyle = w.grass; ctx.lineWidth=2;
     for (let i = 0; i < 45; i++) { const x = ((i*27-frameCount*gameSpeed)%(canvas.width+40))-20; ctx.beginPath(); ctx.moveTo(x, GROUND_Y+35); ctx.lineTo(x+3, GROUND_Y+23); ctx.moveTo(x+6, GROUND_Y+35); ctx.lineTo(x+8, GROUND_Y+26); ctx.stroke(); }
     groundTiles.forEach(t => {
         ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
@@ -1483,44 +2161,49 @@ function checkCollision(a,b) { return a.x<b.x+b.width && a.x+a.width>b.x && a.y<
 function checkCollisions() {
     const pb = player.getHitbox();
     const dash = hasBuff('dash');
+    const rage = hasBuff('rage'); // 😤 狂暴：碰撞秒杀
     // 敌人
     for (const e of enemies) {
         if (e.dead) continue;
         const eb = { x:e.x+6, y:e.y+6, width:e.width-12, height:e.height-12 };
         if (checkCollision(pb, eb)) {
             if (e.frozen > Date.now()) continue; // 冻结了可以穿过
-            if (dash) { killEnemyOrObstacle(e); continue; }
-            e.hp--; e.hit = Date.now() + 200;
+            if (dash || rage) { killEnemyOrObstacle(e); continue; }
+            const wAtk = getWeaponEffect().attack || 0;
+            const isCrit = Math.random() < (getWeaponEffect().crit || 0);
+            const dmg = (1 + wAtk) * (isCrit ? 2 : 1);
+            e.hp -= dmg; e.hit = Date.now() + 200;
             if (e.hp <= 0) {
                 if (e.isBoss) { gameData.bossKilled = (gameData.bossKilled||0) + 1; checkAchievements(); }
                 killEnemyOrObstacle(e);
+                if (isCrit) showToast('💥 暴击！', '');
             } else {
-                // 没打死，玩家掉血（如果不是无敌）
                 if (player.invul < Date.now()) damagePlayer();
             }
             return;
         }
-        if (!e.passed && e.x+e.width < player.x) { e.passed = true; score += Math.floor((e.score||50)/2); }
+        if (!e.passed && e.x+e.width < player.x) { e.passed = true; let es = Math.floor((e.score||50)/2); if (hasBuff('doubleScore')) es*=2; score += es; }
     }
     // 障碍物
     for (const o of obstacles) {
         if (o.dead) continue;
         const ob = { x:o.x+5, y:o.y+5, width:o.width-10, height:o.height-10 };
         if (checkCollision(pb, ob)) {
-            if (hasBuff('freeze')) continue;
-            if (dash) { killEnemyOrObstacle(o); continue; }
+            if (hasBuff('freeze') || hasBuff('timestop')) continue;
+            if (dash || rage) { killEnemyOrObstacle(o); continue; }
             if (player.invul < Date.now()) { damagePlayer(); o.x = -99999; }
             return;
         }
-        if (!o.passed && o.x+o.width < player.x) { o.passed = true; score += 30; combo++; }
+        if (!o.passed && o.x+o.width < player.x) { o.passed = true; let os = 30; if (hasBuff('doubleScore')) os*=2; score += os; combo++; }
     }
     // 金币
     coinList.forEach(c => {
         if (c.collected) return;
         const dx = (player.x+player.width/2)-c.x; const dy = (player.y+player.height/2)-c.y;
         if (Math.hypot(dx,dy) < c.radius+28) {
-            c.collected = true; let mul = 1; if (hasBuff('double')) mul *= 2;
+            c.collected = true; let mul = 1; if (hasBuff('double') || hasBuff('doubleScore')) mul *= 2;
             runCoins += mul; score += 20*mul;
+            if (runCoins >= 20000) { triggerVictory(); return; } // 🏆 达2万金币胜利
             AudioSys.play('coin');
             if (gameData.settings.particlesOn) createCoinParticles(c.x, c.y);
         }
@@ -1544,6 +2227,7 @@ function checkCollisions() {
             if (c.collected) return;
             if (Math.hypot(pet.x-c.x, pet.y-c.y) < 35) {
                 c.collected = true; let mul = 1; if (hasBuff('double')) mul*=2; runCoins += mul; score += 20*mul;
+                if (runCoins >= 20000) { triggerVictory(); return; }
                 if (gameData.settings.particlesOn) createCoinParticles(c.x, c.y);
             }
         });
@@ -1581,10 +2265,12 @@ function hitGameOver() {
     gameState = 'over'; combo = 0;
     const diff = DIFFS[sessionDiff];
     const skinEff = getSkinEffect(gameData.currentSkin);
-    // 💎 皮肤结算加成：coinMul & scoreMul
-    const coinMul = diff.coinMul * (skinEff.coinMul || 1);
-    const finalScore = Math.floor(score * (skinEff.scoreMul || 1));
-    const earnCoins = Math.floor(runCoins * coinMul);
+    const petEff = getPetBonus(); // 🐾 宠物结算加成
+    // 💎 皮肤 + 🐾 宠物 结算加成：coinMul & scoreMul
+    const coinMul = diff.coinMul * (skinEff.coinMul || 1) * (petEff.coinMul || 1);
+    const finalScore = Math.floor(score * (skinEff.scoreMul || 1) * (petEff.scoreMul || 1));
+    // ⚠️ 每局金币上限 20000
+    const earnCoins = Math.min(20000, Math.floor(runCoins * coinMul));
     gameData.totalGames = (gameData.totalGames||0)+1;
     gameData.totalCoinsEarned = (gameData.totalCoinsEarned||0)+earnCoins;
     gameData.coins += earnCoins;
@@ -1604,6 +2290,41 @@ function hitGameOver() {
     AudioSys.stopBGM();
     // 联机结束
     if (isHost) sendOnline({ type:'gameover', score, coins:earnCoins });
+}
+
+// ========== 【🏆 胜利系统：单局达20000金币】 ==========
+function triggerVictory() {
+    if (gameState !== 'playing') return;
+    gameState = 'victory';
+    AudioSys.stopBGM();
+    AudioSys.play && AudioSys.play('ach');
+    // 给奖杯
+    gameData.trophies = (gameData.trophies || 0) + 1;
+    // 检查是否解锁世界二
+    let unlockedW2 = false;
+    if (gameData.trophies >= 100 && !gameData.worldUnlocked?.[2]) {
+        gameData.worldUnlocked = gameData.worldUnlocked || {};
+        gameData.worldUnlocked[2] = true;
+        unlockedW2 = true;
+    }
+    // 结算金币（上限20000）
+    const diff = DIFFS[sessionDiff];
+    const skinEff = getSkinEffect(gameData.currentSkin);
+    const petEff = getPetBonus();
+    const coinMul = diff.coinMul * (skinEff.coinMul || 1) * (petEff.coinMul || 1);
+    const earnCoins = Math.min(20000, Math.floor(runCoins * coinMul));
+    gameData.coins += earnCoins;
+    gameData.totalCoinsEarned = (gameData.totalCoinsEarned||0) + earnCoins;
+    gameData.totalGames = (gameData.totalGames||0)+1;
+    if (score > (gameData.highScore||0)) gameData.highScore = Math.floor(score * (skinEff.scoreMul||1) * (petEff.scoreMul||1));
+    saveData(); checkAchievements();
+    // 显示胜利界面
+    document.getElementById('victoryTrophies').textContent = gameData.trophies;
+    document.getElementById('victoryCoins').textContent = earnCoins;
+    document.getElementById('victoryWorld2Unlock').classList.toggle('hidden', !unlockedW2);
+    document.getElementById('victoryScreen').classList.remove('hidden');
+    // 庆祝粒子
+    for (let i=0;i<100;i++) spawnParticle(player.x, player.y, (['#ffeaa7','#feca57','#f368e0','#55efc4','#00d2d3'])[Math.floor(Math.random()*5)], 5+Math.random()*5);
 }
 
 // ========== 【游戏主循环】 ==========
@@ -1774,19 +2495,21 @@ function startGame() {
     AudioSys.init(); AudioSys.startBGM();
     sessionDiff = gameData.currentDiff || selectedDiff || 'normal';
     gameState = 'playing'; canvasMode = 'normal';
-    score = 0; runCoins = 0; gameSpeed = BASE_SPEED * DIFFS[sessionDiff].speedMul;
+    score = 0; runCoins = 0; gameSpeed = BASE_SPEED * DIFFS[sessionDiff].speedMul * (gameData.currentWorld === 2 ? 1.3 : 1); // 世界二加速30%
     frameCount = 0;
     // ====== 💎 皮肤被动效果（神话/至尊皮肤专属） ======
     const eff = getSkinEffect(gameData.currentSkin);
-    const baseHp = MAX_HP + (eff.extraHp||0); // 创世神 +2心
+    const petEff = getPetBonus(); // 🐾 宠物被动
+    const baseHp = MAX_HP + (eff.extraHp||0) + (petEff.extraHp||0);
     const hpMax = Math.min(baseHp, 5);
     playerHp = hpMax;
     updateHpUI(hpMax);
     // 初始金币加成
     if (eff.startCoins) runCoins += eff.startCoins;
-    // 初始道具加成（神龙/创世神）
-    if (eff.startShields) for (let i=0;i<eff.startShields;i++) { addBuff('shield', 99999); addShieldParticle(); }
-    if (eff.startMagnet) addBuff('magnet', 15); // 前15秒磁铁
+    // 初始道具加成（神龙/创世神 + 宠物玄龟）
+    const totalShields = (eff.startShields||0) + (petEff.startShields||0);
+    if (totalShields) for (let i=0;i<totalShields;i++) { addBuff('shield', 99999); addShieldParticle(); }
+    if (eff.startMagnet || petEff.startMagnet) addBuff('magnet', 15); // 前15秒磁铁
     enemies = []; obstacles = []; coinList = []; particles = [];
     activeBuffs = {}; skillCooldowns = {}; tripleJumpActive = false; petActive = false;
     // 创世神皮肤：开局回满至 hpMax 心（已经在上面赋值了playerHp）
@@ -1826,6 +2549,8 @@ document.getElementById('btnQuit').onclick = quitToMenu;
 document.getElementById('btnBackMenu').onclick = quitToMenu;
 document.getElementById('btnBackMenu2').onclick = quitToMenu;
 document.getElementById('btnRetry').onclick = () => { document.getElementById('gameOverScreen').classList.add('hidden'); startGame(); };
+document.getElementById('btnVictoryRetry').onclick = () => { document.getElementById('victoryScreen').classList.add('hidden'); startGame(); };
+document.getElementById('btnVictoryMenu').onclick = () => { document.getElementById('victoryScreen').classList.add('hidden'); quitToMenu(); };
 
 // ========== 【键盘 & 鼠标（新增技能键）】 ==========
 document.addEventListener('keydown', e => {
@@ -1858,5 +2583,5 @@ idleLoop();
 if (!animId) animId = requestAnimationFrame(gameLoop);
 refreshMenuUI();
 renderSkillBar();
-console.log('%c🏃 跑酷大冒险 v2.0 加载成功！','color:#f7c948;font-size:18px;font-weight:bold');
-console.log('%c11种技能 · 5种敌人 · 真双人P2P联机','color:#55efc4;font-size:14px');
+console.log('%c🏃 跑酷大冒险 v3.0 加载成功！武器+宠物+好友乱斗+赛季制！','color:#f7c948;font-size:18px;font-weight:bold');
+console.log('%c21种技能 · 9把武器 · 9只宠物 · 好友乱斗 · 赛季制','color:#55efc4;font-size:14px');

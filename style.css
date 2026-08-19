@@ -2313,3 +2313,121 @@ kbd {
     max-width: 900px;
     margin: 10px auto 30px;
 }
+
+/* ============================================
+   v3.0 新增样式：武器商城 / 宠物商店 / 好友乱斗
+   ============================================ */
+
+/* 菜单新按钮 */
+.menu-btn.weapon-btn { background: linear-gradient(135deg,#2d3436,#636e72); border-color:#a4b0be; }
+.menu-btn.weapon-btn:hover { box-shadow:0 6px 20px rgba(116,125,133,0.4); }
+.menu-btn.pet-btn { background: linear-gradient(135deg,#2d3436,#e17055); border-color:#fab1a0; }
+.menu-btn.pet-btn:hover { box-shadow:0 6px 20px rgba(225,112,85,0.4); }
+.menu-btn.battle-btn { background: linear-gradient(135deg,#2d3436,#6c5ce7); border-color:#a29bfe; }
+.menu-btn.battle-btn:hover { box-shadow:0 6px 20px rgba(108,92,231,0.4); }
+.btn-tag.weapon-tag { background:linear-gradient(90deg,#a4b0be,#dfe6e9); color:#2d3436; }
+.btn-tag.pet-tag { background:linear-gradient(90deg,#fab1a0,#ffeaa7); color:#2d3436; }
+.btn-tag.battle-tag { background:linear-gradient(90deg,#ff6b6b,#feca57); color:#2d3436; font-weight:700; }
+
+/* 商城通用卡片（武器/宠物共用） */
+.shop-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; padding:20px; max-width:1000px; margin:0 auto; }
+.shop-card {
+    background: linear-gradient(135deg,rgba(45,52,54,0.95),rgba(15,12,41,0.95));
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px; padding: 16px; text-align:center;
+    transition: all .2s; display:flex; flex-direction:column; gap:8px;
+}
+.shop-card:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.3); }
+.shop-card.equipped { border-color:#55efc4; box-shadow:0 0 15px rgba(85,239,196,0.3); }
+.shop-card.diamond-card {
+    border:3px solid transparent !important;
+    background:
+        linear-gradient(rgba(15,12,41,0.95),rgba(15,12,41,0.95)) padding-box,
+        linear-gradient(135deg,#ff6b6b,#feca57,#5f27cd,#00d2d3) border-box !important;
+}
+.shop-icon { font-size:3rem; margin:4px 0; }
+.shop-card h4 { color:#dfe6e9; font-size:1.05rem; }
+.shop-desc { font-size:0.8rem; color:#a4b0be; line-height:1.4; flex:1; }
+.shop-stats { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; font-size:0.8rem; color:#74b9ff; }
+.shop-stats b { color:#feca57; }
+.shop-owned-badge { background:linear-gradient(90deg,#55efc4,#00b894); color:#0a0a0a; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.85rem; }
+.shop-equip-btn { background:linear-gradient(90deg,#a29bfe,#6c5ce7); color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.9rem; font-weight:600; }
+.shop-equip-btn:hover { filter:brightness(1.2); }
+.shop-banner { background:linear-gradient(90deg,rgba(108,92,231,0.2),rgba(0,210,211,0.2)); text-align:center; padding:10px; margin:10px auto; max-width:900px; border-radius:10px; color:#a4b0be; font-size:0.85rem; }
+
+/* 好友乱斗界面 */
+.battle-setup { max-width:600px; margin:0 auto; padding:20px; display:flex; flex-direction:column; gap:20px; }
+.battle-info-card { background:linear-gradient(135deg,rgba(108,92,231,0.15),rgba(0,210,211,0.15)); border:2px solid rgba(162,155,254,0.3); border-radius:14px; padding:20px; text-align:center; }
+.battle-info-card h3 { font-size:1.5rem; margin-bottom:8px; background:linear-gradient(90deg,#a29bfe,#00d2d3); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.battle-info-card p { color:#a4b0be; font-size:0.9rem; margin-bottom:10px; }
+.battle-loadout { display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:#74b9ff; }
+.battle-actions { display:flex; flex-direction:column; gap:12px; }
+.battle-join { display:flex; gap:8px; }
+.battle-join input { flex:1; background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.15); border-radius:8px; padding:10px; color:#fff; font-size:1rem; text-align:center; letter-spacing:4px; }
+.battle-join input:focus { border-color:#a29bfe; outline:none; }
+.big-btn { background:linear-gradient(90deg,#6c5ce7,#a29bfe); color:#fff; border:none; padding:14px 20px; border-radius:10px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .2s; }
+.big-btn:hover { filter:brightness(1.15); transform:translateY(-2px); }
+.big-btn:active { transform:translateY(0); }
+.big-btn.attack-btn { background:linear-gradient(90deg,#ff6b6b,#ee5253); font-size:1.2rem; padding:16px; }
+.battle-status { background:rgba(255,255,255,0.06); border-radius:10px; padding:12px; display:flex; align-items:center; gap:12px; }
+.battle-status.hidden { display:none; }
+.battle-status .bs-icon { font-size:1.8rem; }
+.battle-status .bs-text { display:flex; flex-direction:column; gap:2px; }
+.battle-status .bs-text b { color:#dfe6e9; }
+.battle-status .bs-text span { color:#a4b0be; font-size:0.8rem; }
+.battle-status .bs-room { margin-left:auto; background:rgba(255,234,167,0.15); border:1px solid rgba(254,202,87,0.3); border-radius:8px; padding:6px 12px; color:#feca57; font-size:0.9rem; }
+.battle-status .bs-room b { font-size:1.2rem; }
+.battle-rules { background:rgba(255,255,255,0.04); border-radius:10px; padding:16px; }
+.battle-rules h4 { color:#a29bfe; margin-bottom:8px; }
+.battle-rules ul { list-style:none; padding:0; }
+.battle-rules li { color:#a4b0be; font-size:0.8rem; padding:3px 0; padding-left:16px; position:relative; }
+.battle-rules li::before { content:'▸'; position:absolute; left:0; color:#6c5ce7; }
+
+/* 战斗竞技场 */
+.battle-arena { max-width:600px; margin:0 auto; padding:16px; }
+.battle-hud { background:linear-gradient(135deg,rgba(45,52,54,0.9),rgba(15,12,41,0.9)); border-radius:14px; padding:20px; margin-bottom:16px; }
+.battle-hp-row { display:flex; align-items:center; gap:10px; margin:8px 0; }
+.battle-hp-label { color:#dfe6e9; font-size:0.9rem; white-space:nowrap; width:100px; }
+.battle-hp-label .hp-num { color:#feca57; font-weight:700; font-size:1.1rem; }
+.hp-bar { flex:1; height:24px; background:rgba(0,0,0,0.4); border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+.hp-fill { height:100%; border-radius:12px; transition:width .3s; }
+.hp-fill.my-hp { background:linear-gradient(90deg,#55efc4,#00b894); }
+.hp-fill.enemy-hp { background:linear-gradient(90deg,#ff6b6b,#d63031); }
+.vs-text { text-align:center; font-size:1.5rem; font-weight:900; color:#6c5ce7; margin:8px 0; }
+.battle-skills { display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
+.battle-skill-btn { background:linear-gradient(90deg,#6c5ce7,#a29bfe); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:600; }
+.battle-skill-btn:hover { filter:brightness(1.2); }
+.battle-log { background:rgba(0,0,0,0.3); border-radius:10px; padding:12px; margin-top:12px; max-height:180px; overflow-y:auto; }
+.battle-log-line { color:#a4b0be; font-size:0.85rem; padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.battle-log-line:last-child { color:#feca57; }
+
+/* ============================================
+   v4.0 新增样式：胜利界面 / 世界切换 / 钻石兑换
+   ============================================ */
+
+/* 胜利界面 */
+.overlay-card.victory { background: linear-gradient(135deg,rgba(254,202,87,0.15),rgba(243,104,224,0.15),rgba(0,210,211,0.15)); border-color:rgba(254,202,87,0.5); box-shadow: 0 0 30px rgba(254,202,87,0.3); }
+.overlay-card.victory .card-icon { font-size:5rem; animation: bounce 1s ease infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+.victory-sub { color:#feca57; font-size:1rem; margin:8px 0; text-align:center; }
+
+/* 世界信息栏 */
+.world-info { text-align:center; margin:10px 0; }
+.world-current { color:#dfe6e9; font-size:0.95rem; margin-bottom:8px; }
+.world-current b, .world-current span { color:#feca57; }
+.world-switch { display:flex; gap:12px; justify-content:center; }
+.world-btn { background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.15); color:#dfe6e9; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.9rem; transition:all .2s; }
+.world-btn:hover { border-color:#a29bfe; }
+.world-btn.active { background:linear-gradient(90deg,#6c5ce7,#a29bfe); border-color:#a29bfe; color:#fff; font-weight:700; }
+.world-btn.locked { opacity:0.5; cursor:not-allowed; }
+
+/* 钻石兑换卡片 */
+.exchange-card { background:linear-gradient(135deg,rgba(45,52,54,0.95),rgba(15,12,41,0.95)); border:2px solid rgba(254,202,87,0.3); border-radius:14px; padding:16px; text-align:center; display:flex; flex-direction:column; gap:8px; align-items:center; transition:all .2s; }
+.exchange-card:hover { border-color:rgba(254,202,87,0.6); transform:translateY(-3px); }
+.exchange-card.disabled { opacity:0.5; }
+.ex-icon { font-size:3rem; }
+.ex-amount { color:#feca57; font-size:1.1rem; font-weight:700; }
+.ex-cost { color:#74b9ff; font-size:0.85rem; }
+.ex-btn { background:linear-gradient(90deg,#feca57,#ff9ff3); color:#2d3436; border:none; padding:8px 24px; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.9rem; transition:all .2s; }
+.ex-btn:hover { filter:brightness(1.15); }
+.ex-btn.disabled { opacity:0.4; cursor:not-allowed; }
