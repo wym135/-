@@ -4,23 +4,23 @@
    ========================================================= */
 
 // ========== 【11种技能系统】 ==========
-// cost = 每次释放消耗的金币（从本局获得的 runCoins 里扣，不够扣永久金币兜底）
+// buyPrice = 购买价（一次性花金币买下，买了就永久免费释放）；0=免费/初始拥有
 // isDiamond + diamondPrice = 钻石专属神技，需要用钻石解锁才能装备/使用
 const SKILLS = [
-    { id:'fire',    name:'火焰冲击', key:'Q', emoji:'🔥', cd:8,  cost:10, color:'#ff6b35', color2:'#d63031', desc:'发射3个火球，摧毁前方最近3个敌人/障碍物！' },
-    { id:'ice',     name:'冰霜新星', key:'W', emoji:'❄️', cd:15, cost:25, color:'#74b9ff', color2:'#0984e3', desc:'全屏冰霜爆发！冻结所有敌人+障碍物5秒，可直接穿过！' },
-    { id:'bolt',    name:'闪电链',   key:'E', emoji:'⚡', cd:12, cost:18, color:'#fdcb6e', color2:'#f39c12', desc:'召唤闪电，瞬间击杀屏幕内血量最低的3个敌人！' },
-    { id:'dash',    name:'加速冲刺', key:'R', emoji:'💨', cd:20, cost:15, color:'#a29bfe', color2:'#6c5ce7', desc:'8秒内速度翻倍！且碰撞免疫（直接撞爆障碍）！' },
-    { id:'heal',    name:'治愈光环', key:'T', emoji:'💚', cd:30, cost:30, color:'#55efc4', color2:'#00b894', desc:'恢复1颗心！并获得15秒自动吸附金币效果！' },
-    { id:'whirl',   name:'旋风斩',   key:'A', emoji:'🌪️', cd:25, cost:40, color:'#81ecec', color2:'#00cec9', desc:'召唤巨大龙卷风！清除屏幕上所有敌人和障碍物！' },
-    { id:'rain',    name:'金币雨',   key:'S', emoji:'💎', cd:40, cost:35, color:'#ffeaa7', color2:'#fdcb6e', desc:'从天上掉落50个金币！疯狂收集吧！（净赚超多！）' },
-    { id:'slow',    name:'时光减速', key:'D', emoji:'⏳', cd:22, cost:20, color:'#fab1a0', color2:'#e17055', desc:'10秒内敌人/障碍物速度-70%！轻松躲！' },
-    { id:'triple',  name:'三段跳',   key:'F', emoji:'🦘', cd:18, cost:8,  color:'#ff7675', color2:'#d63031', desc:'20秒内支持三段跳！（原本只能二段跳）空中飞舞！' },
-    { id:'pet',     name:'召唤宠物', key:'G', emoji:'🐦', cd:45, cost:50, color:'#ff9ff3', color2:'#f368e0', desc:'召唤一只神鸟伙伴，30秒内自动帮你吃金币+啄敌人！' },
+    { id:'fire',    name:'火焰冲击', key:'Q', emoji:'🔥', cd:8,  buyPrice:0,   color:'#ff6b35', color2:'#d63031', desc:'发射3个火球，摧毁前方最近3个敌人/障碍物！' },
+    { id:'ice',     name:'冰霜新星', key:'W', emoji:'❄️', cd:15, buyPrice:200, color:'#74b9ff', color2:'#0984e3', desc:'全屏冰霜爆发！冻结所有敌人+障碍物5秒，可直接穿过！' },
+    { id:'bolt',    name:'闪电链',   key:'E', emoji:'⚡', cd:12, buyPrice:150, color:'#fdcb6e', color2:'#f39c12', desc:'召唤闪电，瞬间击杀屏幕内血量最低的3个敌人！' },
+    { id:'dash',    name:'加速冲刺', key:'R', emoji:'💨', cd:20, buyPrice:0,   color:'#a29bfe', color2:'#6c5ce7', desc:'8秒内速度翻倍！且碰撞免疫（直接撞爆障碍）！' },
+    { id:'heal',    name:'治愈光环', key:'T', emoji:'💚', cd:30, buyPrice:250, color:'#55efc4', color2:'#00b894', desc:'恢复1颗心！并获得15秒自动吸附金币效果！' },
+    { id:'whirl',   name:'旋风斩',   key:'A', emoji:'🌪️', cd:25, buyPrice:350, color:'#81ecec', color2:'#00cec9', desc:'召唤巨大龙卷风！清除屏幕上所有敌人和障碍物！' },
+    { id:'rain',    name:'金币雨',   key:'S', emoji:'💎', cd:40, buyPrice:300, color:'#ffeaa7', color2:'#fdcb6e', desc:'从天上掉落50个金币！疯狂收集吧！（净赚超多！）' },
+    { id:'slow',    name:'时光减速', key:'D', emoji:'⏳', cd:22, buyPrice:180, color:'#fab1a0', color2:'#e17055', desc:'10秒内敌人/障碍物速度-70%！轻松躲！' },
+    { id:'triple',  name:'三段跳',   key:'F', emoji:'🦘', cd:18, buyPrice:120, color:'#ff7675', color2:'#d63031', desc:'20秒内支持三段跳！（原本只能二段跳）空中飞舞！' },
+    { id:'pet',     name:'召唤宠物', key:'G', emoji:'🐦', cd:45, buyPrice:400, color:'#ff9ff3', color2:'#f368e0', desc:'召唤一只神鸟伙伴，30秒内自动帮你吃金币+啄敌人！' },
 
-    // ===== 钻石专属神级技能（解锁后才能装备） =====
-    { id:'meteor',  name:'天神·流星雨', key:'Z', emoji:'☄️', cd:60, cost:100, isDiamond:true, diamondPrice:399, color:'#ff4757', color2:'#6c5ce7', desc:'💎【神技·钻石解锁】召唤10颗天外陨石！全地图敌人+障碍物全部清空！还送30大金币！' },
-    { id:'genesis', name:'创世·时光回溯', key:'X', emoji:'🌌', cd:90, cost:150, isDiamond:true, diamondPrice:699, color:'#5f27cd', color2:'#00d2d3', desc:'💎【终极技·钻石解锁】时间倒流！回满5颗心+所有技能CD重置+本局金币翻倍+3秒无敌！' }
+    // ===== 钻石专属神级技能（用钻石解锁后才能装备） =====
+    { id:'meteor',  name:'天神·流星雨', key:'Z', emoji:'☄️', cd:60, isDiamond:true, diamondPrice:399, color:'#ff4757', color2:'#6c5ce7', desc:'💎【神技·钻石解锁】召唤10颗天外陨石！全地图敌人+障碍物全部清空！还送30大金币！' },
+    { id:'genesis', name:'创世·时光回溯', key:'X', emoji:'🌌', cd:90, isDiamond:true, diamondPrice:699, color:'#5f27cd', color2:'#00d2d3', desc:'💎【终极技·钻石解锁】时间倒流！回满5颗心+所有技能CD重置+本局金币翻倍+3秒无敌！' }
 ];
 
 const SKILL_MAP = {};
@@ -35,15 +35,13 @@ function renderSkillBar() {
     if (!bar) return;
     bar.innerHTML = SKILLS.map(s => {
         const eq = isSkillEquipped(s.id);
-        const di = isDiamondSkill(s.id);
-        const diUnlocked = isDiamondSkillUnlocked(s.id);
-        const cls = [eq?'':'not-equipped', (di && !diUnlocked)?'diamond-locked':''].join(' ');
+        const owned = isSkillOwned(s.id);
+        const cls = [eq?'':'not-equipped', !owned?'diamond-locked':''].join(' ');
         return `
         <div class="skill-slot ${cls}" id="slot_${s.id}" data-skill="${s.id}"
              style="--c1:${s.color}22; --c2:${s.color2}22; --shadow:${s.color}55;">
             <span class="skill-key-label">${s.key}</span>
             <span class="skill-emoji">${s.emoji}</span>
-            <span class="skill-cost" id="cost_${s.id}">🪙${s.cost}</span>
             <div class="skill-cd-text" id="cd_${s.id}" style="display:none"></div>
         </div>`;
     }).join('');
@@ -57,7 +55,6 @@ function updateSkillCDs() {
     SKILLS.forEach(s => {
         const slot = document.getElementById('slot_' + s.id);
         const cdTxt = document.getElementById('cd_' + s.id);
-        const costTxt = document.getElementById('cost_' + s.id);
         if (!slot) return;
         const end = skillCooldowns[s.id] || 0;
         const remain = Math.max(0, end - now);
@@ -66,12 +63,10 @@ function updateSkillCDs() {
             const pct = Math.min(100, (remain / (s.cd * 1000)) * 100);
             slot.style.setProperty('--cdh', pct + '%');
             if (cdTxt) { cdTxt.style.display = 'block'; cdTxt.textContent = Math.ceil(remain / 1000); }
-            if (costTxt) costTxt.style.display = 'none';
         } else {
             slot.classList.remove('cd');
             slot.style.setProperty('--cdh', '0%');
             if (cdTxt) cdTxt.style.display = 'none';
-            if (costTxt) costTxt.style.display = 'block';
         }
     });
 }
@@ -105,6 +100,12 @@ function useSkill(idOrKey) {
         return;
     }
 
+    // ====== 没买/没拥有的技能不让用 ======
+    if (!isSkillOwned(s.id)) {
+        showToast(`🚫 ${s.emoji}【${s.name}】还没购买！去「技能图鉴」花金币买下它吧~`, 'error');
+        return;
+    }
+
     // ====== 未装备的技能不让用 ======
     if (!isSkillEquipped(s.id)) {
         showToast(`🚫 ${s.emoji} ${s.name} 本局未装备！去「技能装备」界面选上它吧~`, 'error');
@@ -116,11 +117,6 @@ function useSkill(idOrKey) {
     const now = Date.now();
     if ((skillCooldowns[s.id] || 0) > now) { showToast(`${s.emoji} ${s.name} 还在冷却中！`, ''); return; }
 
-    // 金币检查（联机副手模式：由主机扣费，所以只提示不检查本地；如果主机也收到施放指令再扣一次）
-    if (!isOnlineHelper) {
-        if (!paySkillCost(s.cost)) { showToast(`🪙 金币不够！施放 ${s.name} 需要 🪙${s.cost}`, 'error'); return; }
-    }
-
     // 💎 皮肤被动：技能冷却减免（神龙大帝-20% / 创世神-30%）
     const cdEff = getSkinEffect(gameData.currentSkin).cdMul || 1;
     skillCooldowns[s.id] = now + Math.floor(s.cd * cdEff * 1000);
@@ -128,7 +124,7 @@ function useSkill(idOrKey) {
     // 联机模式：副手施放技能，通知主机
     if (isOnlineHelper) {
         sendOnline({ type: 'skill', id: s.id });
-        showToast(`🎯 已施放 ${s.name}（扣 🪙${s.cost}）给主机！`, 'success');
+        showToast(`🎯 已施放 ${s.name} 给主机！`, 'success');
         return;
     }
 
@@ -522,16 +518,29 @@ function renderSkillLib() {
     const types = ['伤害','控制','爆发','机动','治疗','清场','资源','控制','机动','辅助','毁灭','神术'];
     grid.innerHTML = SKILLS.map((s,i) => {
         const isDi = !!s.isDiamond;
-        const unlocked = isDiamondSkillUnlocked(s.id);
+        const owned = isSkillOwned(s.id);
         const cardCls = isDi ? 'skill-card diamond-skill' : 'skill-card';
-        let unlockHtml = '';
+        let actionHtml = '';
         if (isDi) {
-            if (unlocked) unlockHtml = `<div class="skill-unlocked-badge">✓ 已解锁</div>`;
+            // 钻石技能
+            if (owned) actionHtml = `<div class="skill-unlocked-badge">✓ 已解锁</div>`;
             else {
                 const can = (gameData.diamonds||0) >= (s.diamondPrice||0);
-                unlockHtml = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-dskill="${s.id}" ${can?'':'disabled'}>💎 ${s.diamondPrice} 解锁</button>`;
+                actionHtml = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-dskill="${s.id}" ${can?'':'disabled'}>💎 ${s.diamondPrice} 解锁</button>`;
+            }
+        } else {
+            // 普通技能
+            if (owned) actionHtml = `<div class="skill-unlocked-badge">✓ 已拥有</div>`;
+            else {
+                const can = (gameData.coins||0) >= (s.buyPrice||0);
+                actionHtml = `<button class="skill-unlock-btn ${can?'':'disabled'}" data-bskill="${s.id}" ${can?'':'disabled'}>🪙 ${s.buyPrice} 购买</button>`;
             }
         }
+        const priceHtml = isDi
+            ? `<div class="skill-info-item">解锁：<b style="color:#a29bfe">💎${s.diamondPrice}</b></div>`
+            : (s.buyPrice === 0
+                ? `<div class="skill-info-item">价格：<b style="color:#55efc4">免费</b></div>`
+                : `<div class="skill-info-item">价格：<b style="color:#f7c948">🪙${s.buyPrice}</b></div>`);
         return `
         <div class="${cardCls}" style="--skill-color:${s.color}; --skill-color2:${s.color2};">
             <div class="skill-header">
@@ -544,14 +553,18 @@ function renderSkillLib() {
             <div class="skill-desc">${s.desc}</div>
             <div class="skill-info-row">
                 <div class="skill-info-item">冷却：<b>${s.cd}秒</b></div>
-                <div class="skill-info-item">消耗：<b style="color:#f7c948">🪙${s.cost}</b></div>
-                ${isDi ? `<div class="skill-info-item">解锁：<b style="color:#a29bfe">💎${s.diamondPrice}</b></div>` : `<div class="skill-info-item">类型：<b>${types[i] || '技能'}</b></div>`}
+                <div class="skill-info-item">释放：<b style="color:#55efc4">免费</b></div>
+                ${priceHtml}
+                ${!isDi ? `<div class="skill-info-item">类型：<b>${types[i] || '技能'}</b></div>` : ''}
             </div>
-            ${unlockHtml}
+            ${actionHtml}
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-dskill]').forEach(b => {
         b.addEventListener('click', () => unlockDiamondSkill(b.dataset.dskill));
+    });
+    grid.querySelectorAll('[data-bskill]').forEach(b => {
+        b.addEventListener('click', () => buySkill(b.dataset.bskill));
     });
 }
 
@@ -691,23 +704,49 @@ function isDiamondSkillUnlocked(id) {
     if (!isDiamondSkill(id)) return true; // 非钻石技能默认解锁
     return Array.isArray(gameData.unlockedDiamondSkills) && gameData.unlockedDiamondSkills.includes(id);
 }
+// 是否已拥有该技能（钻石技能看钻石解锁，普通技能看金币购买）
+function isSkillOwned(id) {
+    const s = SKILLS.find(x => x.id === id);
+    if (!s) return false;
+    if (s.isDiamond) return isDiamondSkillUnlocked(id);
+    if (s.buyPrice === 0) return true; // 免费技能默认拥有
+    return Array.isArray(gameData.ownedSkills) && gameData.ownedSkills.includes(id);
+}
+// 用金币购买普通技能
+function buySkill(id) {
+    const s = SKILLS.find(x => x.id === id);
+    if (!s || s.isDiamond) return;
+    if (isSkillOwned(id)) { showToast('这个技能你已经拥有啦！', 'success'); return; }
+    const price = s.buyPrice || 0;
+    if ((gameData.coins || 0) < price) {
+        showToast(`🪙 金币不够！购买【${s.name}】需要 🪙${price}，去跑酷赚金币吧~`, 'error');
+        return;
+    }
+    AudioSys.play && AudioSys.play('buy');
+    gameData.coins -= price;
+    if (!Array.isArray(gameData.ownedSkills)) gameData.ownedSkills = [];
+    gameData.ownedSkills.push(id);
+    saveData();
+    showToast(`🎉 恭喜购买成功！【${s.name}】已永久拥有，释放免费！去装备吧~`, 'success');
+    renderSkillLib(); refreshMenuUI();
+}
 function isDiamondSkinUnlocked(id) {
     if (!isDiamondSkin(id)) return true;
     return Array.isArray(gameData.unlockedDiamondSkins) && gameData.unlockedDiamondSkins.includes(id);
 }
 function ensureEquippedValid() {
-    // 校验 equippedSkills 必须是长度2的合法id数组（不合法就用默认），且必须是已解锁的！
+    // 校验 equippedSkills 必须是长度2的合法id数组（不合法就用默认），且必须是已拥有的！
     const def = DEFAULT_DATA.equippedSkills;
     if (!Array.isArray(gameData.equippedSkills)) { gameData.equippedSkills = [...def]; }
-    // 过滤：必须存在于 SKILLS 且 钻石技能必须已解锁
+    // 过滤：必须存在于 SKILLS 且 必须已拥有（普通技能已买 / 钻石技能已解锁）
     let valid = gameData.equippedSkills.filter(id => {
         const sk = SKILLS.find(s=>s.id===id);
         if (!sk) return false;
-        if (isDiamondSkill(id) && !isDiamondSkillUnlocked(id)) return false;
-        return true;
+        return isSkillOwned(id);
     }).slice(0, 2);
     while (valid.length < 2) {
-        const pick = SKILLS.find(s => !valid.includes(s.id) && !s.isDiamond);
+        // 优先补默认的两个免费技能，再找其他已拥有的
+        const pick = SKILLS.find(s => !valid.includes(s.id) && isSkillOwned(s.id));
         if (!pick) break;
         valid.push(pick.id);
     }
@@ -739,7 +778,7 @@ function _renderEquipAll() {
                         <button class="es-remove" data-rm="${s.id}" title="移除">×</button>
                         <div class="es-emoji">${s.emoji}</div>
                         <div class="es-name">${s.name}</div>
-                        <div class="es-info"><span>⌨️ ${s.key}</span><span>🪙${s.cost}</span><span>⏱️${s.cd}s</span></div>
+                        <div class="es-info"><span>⌨️ ${s.key}</span><span>✅已拥有</span><span>⏱️${s.cd}s</span></div>
                     </div>`;
                 if (i === 0) preview.innerHTML += `<div class="equip-arrow">⚔️</div>`;
             } else {
@@ -775,12 +814,14 @@ function _renderEquipAll() {
         const full = tempEquipped.length >= 2;
         const dis = !eq && full;
         const isDi = !!s.isDiamond;
-        const unlocked = isDiamondSkillUnlocked(s.id);
-        const diLocked = isDi && !unlocked;
+        const owned = isSkillOwned(s.id);
+        const notOwned = !owned; // 没买的/没解锁的都锁住
         let cls = `equip-card ${eq?'equipped':''} ${dis?'disabled':''}`;
         if (isDi) cls += ' diamond-card';
-        if (diLocked) cls += ' locked';
-        const dataAttr = diLocked ? `data-price="💎${s.diamondPrice}"` : '';
+        if (notOwned) cls += ' locked';
+        const lockPrice = isDi ? `💎${s.diamondPrice}` : (s.buyPrice === 0 ? '免费' : `🪙${s.buyPrice}`);
+        const dataAttr = notOwned ? `data-price="${lockPrice}"` : '';
+        const ownBadge = owned ? '✓' : '🔒';
         return `
         <div class="${cls}" ${dataAttr}
              style="--skill-color:${s.color}; --skill-color2:${s.color2};--skill-color1:${s.color}18;--skill-shadow:${s.color}44;"
@@ -792,19 +833,25 @@ function _renderEquipAll() {
             <div class="ec-desc">${s.desc}</div>
             <div class="ec-info-row">
                 <span>冷却：<b>${s.cd}秒</b></span>
-                <span class="cost">消耗：<b>🪙${s.cost}</b></span>
-                ${isDi ? `<span class="cost">解锁：<b style="color:#a29bfe">💎${s.diamondPrice}${unlocked?' ✓':''}</b></span>` : `<span>类型：<b>${types[i]||'技能'}</b></span>`}
+                <span class="cost">释放：<b style="color:#55efc4">免费</b></span>
+                ${isDi ? `<span class="cost">解锁：<b style="color:#a29bfe">💎${s.diamondPrice} ${ownBadge}</b></span>` : `<span class="cost">价格：<b style="color:#f7c948">${s.buyPrice===0?'免费':'🪙'+s.buyPrice} ${ownBadge}</b></span>`}
+                <span>类型：<b>${types[i]||'技能'}</b></span>
             </div>
         </div>`;
     }).join('');
     grid.querySelectorAll('.equip-card').forEach(c => {
         c.addEventListener('click', () => {
             const id = c.dataset.sid;
-            // 钻石技能未解锁的点了，跳到充值/解锁
-            if (isDiamondSkill(id) && !isDiamondSkillUnlocked(id)) {
-                const s = SKILLS.find(x=>x.id===id);
-                showToast(`💎【${s?.name}】未解锁！需要 💎${s?.diamondPrice}，去解锁吧~`, 'error');
-                setTimeout(() => unlockDiamondSkill(id), 700);
+            const s = SKILLS.find(x=>x.id===id);
+            // 没买的技能：引导去图鉴购买/解锁
+            if (!isSkillOwned(id)) {
+                if (isDiamondSkill(id)) {
+                    showToast(`💎【${s?.name}】未解锁！需要 💎${s?.diamondPrice}，去解锁吧~`, 'error');
+                    setTimeout(() => unlockDiamondSkill(id), 700);
+                } else {
+                    showToast(`🪙【${s?.name}】还没购买！需要 🪙${s?.buyPrice}，去技能图鉴买吧~`, 'error');
+                    setTimeout(() => { renderSkillLib(); showScreen('skillLib'); }, 700);
+                }
                 return;
             }
             if (tempEquipped.includes(id)) {
@@ -824,12 +871,13 @@ function _bindEquipButtons() {
     if (rnd && !rnd._bound) {
         rnd._bound = true;
         rnd.addEventListener('click', () => {
-            const pool = [...SKILLS];
+            const pool = SKILLS.filter(s => isSkillOwned(s.id));
+            if (pool.length < 1) { showToast('你还没有任何技能哦！先去图鉴买技能吧~', 'error'); return; }
             for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [pool[i],pool[j]] = [pool[j],pool[i]]; }
-            tempEquipped = pool.slice(0,2).map(s => s.id);
+            tempEquipped = pool.slice(0, Math.min(2, pool.length)).map(s => s.id);
             AudioSys.play && AudioSys.play('click');
             _renderEquipAll();
-            showToast('🎲 已随机选择2个技能！', 'success');
+            showToast('🎲 已随机选择技能！', 'success');
         });
     }
     const clr = document.getElementById('btnClearEquip');
@@ -886,6 +934,7 @@ const DEFAULT_DATA = {
     currentSkin: 'default', ownedSkins: ['default'],
     unlockedDiamondSkins: [], // 已用钻石解锁的皮肤ID
     unlockedDiamondSkills: [], // 已用钻石解锁的钻石专属技能ID
+    ownedSkills: ['fire','dash'], // 已用金币购买的普通技能ID（买了永久免费释放）
     items: { shield: 2, magnet: 1, revive: 1, double: 1 },
     achievements: {},
     settings: { musicVol: 60, soundVol: 80, musicOn: true, soundOn: true, shakeOn: true, particlesOn: true, defaultDiff: 'normal' },
@@ -903,6 +952,7 @@ function loadData() {
         if (typeof data.diamonds !== 'number') data.diamonds = base.diamonds || 0;
         if (!Array.isArray(data.unlockedDiamondSkins)) data.unlockedDiamondSkins = [];
         if (!Array.isArray(data.unlockedDiamondSkills)) data.unlockedDiamondSkills = [];
+        if (!Array.isArray(data.ownedSkills)) data.ownedSkills = [...(base.ownedSkills||[])];
         if (!Array.isArray(data.equippedSkills)) data.equippedSkills = [...(base.equippedSkills||[])];
         return data;
     } catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
