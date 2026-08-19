@@ -1448,7 +1448,7 @@ const DEFAULT_DATA = {
     // ===== v3.0 赛季制 =====
     seasonStart: Date.now(), // 本赛季开始时间
     // ===== v4.0 奖杯 + 世界系统 =====
-    trophies: 0,           // 奖杯数量（单局达20000金币得1个）
+    trophies: 0,           // 奖杯数量（单局达金币上限得1个，上限随奖杯递增）
     currentWorld: 1,       // 当前世界：1=草地 2=宇宙（100奖杯解锁）
     worldUnlocked: { 1: true, 2: false }, // 世界解锁状态
     // ===== 以下保持不变 =====
@@ -1873,7 +1873,15 @@ const DOUBLE_JUMP_FORCE = -13;
 const TRIPLE_JUMP_FORCE = -11;
 const BASE_SPEED = 6;
 const MAX_SPEED = 16;
+const MAX_SPEED_W2 = 22; // 世界二速度上限更高
 const SPEED_INCREMENT = 0.0014;
+// 动态金币上限：世界+奖杯越高，上限越高
+function getCoinCap() {
+    const base = 20000;
+    const worldBonus = gameData.currentWorld === 2 ? 15000 : 0; // 世界二+15000
+    const trophyBonus = Math.floor((gameData.trophies || 0) / 10) * 2000; // 每10奖杯+2000
+    return base + worldBonus + trophyBonus;
+}
 
 let gameState = 'idle';
 let score = 0, runCoins = 0, frameCount = 0, gameSpeed = BASE_SPEED;
@@ -1991,7 +1999,7 @@ function renderWorldInfo() {
     const w = getWorldCfg();
     const w2Unlocked = gameData.worldUnlocked?.[2];
     el.innerHTML = `
-        <div class="world-current">${w.name} | 🏆 ${gameData.trophies||0}/100</div>
+        <div class="world-current">${w.name} | 🏆 ${gameData.trophies||0}/100 | 💰 上限${getCoinCap().toLocaleString()}</div>
         <div class="world-switch">
             <button class="world-btn ${gameData.currentWorld===1?'active':''}" data-world="1">🌍 世界一</button>
             <button class="world-btn ${gameData.currentWorld===2?'active':''} ${w2Unlocked?'':'locked'}" data-world="2">🌌 世界二 ${w2Unlocked?'':'🔒(需100🏆)'}</button>
@@ -2203,7 +2211,7 @@ function checkCollisions() {
         if (Math.hypot(dx,dy) < c.radius+28) {
             c.collected = true; let mul = 1; if (hasBuff('double') || hasBuff('doubleScore')) mul *= 2;
             runCoins += mul; score += 20*mul;
-            if (runCoins >= 20000) { triggerVictory(); return; } // 🏆 达2万金币胜利
+            if (runCoins >= getCoinCap()) { triggerVictory(); return; } // 🏆 达上限胜利
             AudioSys.play('coin');
             if (gameData.settings.particlesOn) createCoinParticles(c.x, c.y);
         }
@@ -2227,7 +2235,7 @@ function checkCollisions() {
             if (c.collected) return;
             if (Math.hypot(pet.x-c.x, pet.y-c.y) < 35) {
                 c.collected = true; let mul = 1; if (hasBuff('double')) mul*=2; runCoins += mul; score += 20*mul;
-                if (runCoins >= 20000) { triggerVictory(); return; }
+                if (runCoins >= getCoinCap()) { triggerVictory(); return; }
                 if (gameData.settings.particlesOn) createCoinParticles(c.x, c.y);
             }
         });
@@ -2269,8 +2277,8 @@ function hitGameOver() {
     // 💎 皮肤 + 🐾 宠物 结算加成：coinMul & scoreMul
     const coinMul = diff.coinMul * (skinEff.coinMul || 1) * (petEff.coinMul || 1);
     const finalScore = Math.floor(score * (skinEff.scoreMul || 1) * (petEff.scoreMul || 1));
-    // ⚠️ 每局金币上限 20000
-    const earnCoins = Math.min(20000, Math.floor(runCoins * coinMul));
+    // ⚠️ 每局金币上限（随世界+奖杯递增）
+    const earnCoins = Math.min(getCoinCap(), Math.floor(runCoins * coinMul));
     gameData.totalGames = (gameData.totalGames||0)+1;
     gameData.totalCoinsEarned = (gameData.totalCoinsEarned||0)+earnCoins;
     gameData.coins += earnCoins;
@@ -2292,7 +2300,7 @@ function hitGameOver() {
     if (isHost) sendOnline({ type:'gameover', score, coins:earnCoins });
 }
 
-// ========== 【🏆 胜利系统：单局达20000金币】 ==========
+// ========== 【🏆 胜利系统：单局达金币上限（随世界+奖杯递增）】 ==========
 function triggerVictory() {
     if (gameState !== 'playing') return;
     gameState = 'victory';
@@ -2307,12 +2315,12 @@ function triggerVictory() {
         gameData.worldUnlocked[2] = true;
         unlockedW2 = true;
     }
-    // 结算金币（上限20000）
+    // 结算金币（上限随世界+奖杯递增）
     const diff = DIFFS[sessionDiff];
     const skinEff = getSkinEffect(gameData.currentSkin);
     const petEff = getPetBonus();
     const coinMul = diff.coinMul * (skinEff.coinMul || 1) * (petEff.coinMul || 1);
-    const earnCoins = Math.min(20000, Math.floor(runCoins * coinMul));
+    const earnCoins = Math.min(getCoinCap(), Math.floor(runCoins * coinMul));
     gameData.coins += earnCoins;
     gameData.totalCoinsEarned = (gameData.totalCoinsEarned||0) + earnCoins;
     gameData.totalGames = (gameData.totalGames||0)+1;
@@ -2339,7 +2347,10 @@ function gameLoop() {
         const freeze = hasBuff('freeze');
         const slow = hasBuff('slow');
         const dash = hasBuff('dash');
-        if (gameSpeed < MAX_SPEED*diff.speedMul*(dash?1.4:1)) gameSpeed += SPEED_INCREMENT*(dash?1.5:1);
+        const maxSp = (gameData.currentWorld === 2 ? MAX_SPEED_W2 : MAX_SPEED) * diff.speedMul * (dash?1.4:1);
+        // 越到后面加速越快：基础增量 + 按当前速度比例递增
+        const accel = SPEED_INCREMENT * (1 + (gameSpeed - BASE_SPEED) / 10) * (dash?1.5:1);
+        if (gameSpeed < maxSp) gameSpeed = Math.min(maxSp, gameSpeed + accel);
 
         const actualSpeed = freeze ? gameSpeed*0.15 : (slow ? gameSpeed*0.3 : gameSpeed);
         coinList.forEach(c => { if (!c.isRain) c.x -= actualSpeed; });
