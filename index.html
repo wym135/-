@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏃 跑酷大冒险 - 联机技能豪华版</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 免服务器联机库：PeerJS（免费云服务器，支持WebRTC点对点） -->
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div class="app-root">
+
+        <!-- ========== 【1】主菜单界面 ========== -->
+        <div id="mainMenu" class="screen active">
+            <div class="menu-bg">
+                <div class="bg-clouds"></div>
+                <div class="bg-buildings"></div>
+            </div>
+            <div class="menu-content">
+                <div class="game-logo">
+                    <div class="logo-icon">🏃‍♂️</div>
+                    <h1 class="logo-title">跑酷大冒险</h1>
+                    <div class="logo-subtitle">SKILLS · ONLINE · DELUXE EDITION</div>
+                    <div class="online-badge">🌐 联机版 真·P2P</div>
+                </div>
+
+                <div class="player-info-bar">
+                    <div class="info-item"><span class="info-icon">🪙</span><span id="menuCoins" class="info-value">0</span></div>
+                    <div class="info-item diamond-info"><span class="info-icon">💎</span><span id="menuDiamonds" class="info-value">0</span></div>
+                    <div class="info-item"><span class="info-icon">🏆</span><span id="menuHighScore" class="info-value">0</span></div>
+                    <div class="info-item"><span class="info-icon">⭐</span><span class="info-value" id="playerLevel">Lv.1</span></div>
+                    <button id="btnRechargeTop" class="recharge-btn mini">💎 充值</button>
+                </div>
+
+                <div class="menu-buttons">
+                    <button id="btnStart" class="menu-btn primary">
+                        <span class="btn-icon">🎮</span><span>单人游戏（技能+敌人）</span>
+                    </button>
+                    <button id="btnOnline" class="menu-btn success">
+                        <span class="btn-icon">🌐</span><span>双人联机模式</span>
+                        <span class="btn-tag green">HOT</span>
+                    </button>
+                    <button id="btnDifficulty" class="menu-btn">
+                        <span class="btn-icon">⚡</span><span>选择难度</span>
+                        <span id="diffLabel" class="btn-tag">普通</span>
+                    </button>
+                    <button id="btnSkillLib" class="menu-btn skill-btn">
+                        <span class="btn-icon">✨</span><span>技能图鉴（11种技能）</span>
+                        <span class="btn-tag rainbow">NEW!</span>
+                    </button>
+                    <button id="btnEquipSkill" class="menu-btn equip-btn">
+                        <span class="btn-icon">🎯</span><span>技能装备（每局带2个）</span>
+                        <span class="btn-tag equip-tag">2/2</span>
+                    </button>
+                    <button id="btnShop" class="menu-btn">
+                        <span class="btn-icon">🛒</span><span>皮肤商店</span>
+                    </button>
+                    <button id="btnItems" class="menu-btn">
+                        <span class="btn-icon">🎒</span><span>道具背包</span>
+                    </button>
+                    <button id="btnAchievements" class="menu-btn">
+                        <span class="btn-icon">🏅</span><span>成就系统</span>
+                    </button>
+                    <button id="btnSettings" class="menu-btn">
+                        <span class="btn-icon">⚙️</span><span>游戏设置</span>
+                    </button>
+                    <button id="btnRecharge" class="menu-btn recharge-btn">
+                        <span class="btn-icon">💎</span><span>钻石充值（解锁神装）</span>
+                        <span class="btn-tag diamond-tag">HOT</span>
+                    </button>
+                    <button id="btnHelp" class="menu-btn small">
+                        <span class="btn-icon">📖</span><span>玩法说明</span>
+                    </button>
+                </div>
+
+                <div class="audio-controls">
+                    <button id="btnMusic" class="audio-btn"><span id="musicIcon">🔊</span> 音乐</button>
+                    <button id="btnSound" class="audio-btn"><span id="soundIcon">🔊</span> 音效</button>
+                    <div class="version">v2.0 联机技能版</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 【联机大厅】 ========== -->
+        <div id="onlineScreen" class="screen">
+            <div class="sub-header online-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🌐 双人联机大厅</h2>
+                <div style="width:100px"></div>
+            </div>
+            <div class="online-content">
+                <div class="online-tip-box">
+                    <h3>💡 怎么一起玩？</h3>
+                    <p>1️⃣ 【主机】点击「创建房间」，把房间号发给朋友</p>
+                    <p>2️⃣ 【朋友】输入房间号，点击「加入房间」</p>
+                    <p>3️⃣ 连接成功后，<b>主机跑酷</b>，<b>朋友帮忙放技能打敌人</b>！</p>
+                    <p class="tip-note">注：两边都要有网，用同一个链接打开游戏（比如都部署到公网，或者都打开同一个本地文件）</p>
+                </div>
+
+                <div class="online-actions">
+                    <div class="online-card">
+                        <h3>🏠 创建房间（当主机）</h3>
+                        <p>你负责跑酷，朋友帮你放技能</p>
+                        <button id="btnCreateRoom" class="menu-btn primary full">✨ 创建房间</button>
+                    </div>
+
+                    <div class="online-card">
+                        <h3>🚪 加入房间（当副手）</h3>
+                        <p>朋友创建了房间？输入TA给你的房间号</p>
+                        <input type="text" id="joinRoomId" placeholder="请输入6位房间号" maxlength="6" class="room-input">
+                        <button id="btnJoinRoom" class="menu-btn success full">🚀 加入房间</button>
+                    </div>
+                </div>
+
+                <!-- 联机状态 -->
+                <div id="onlineStatus" class="online-status hidden">
+                    <div class="status-card">
+                        <div id="statusIcon" class="status-icon">⏳</div>
+                        <h3 id="statusTitle">正在创建房间...</h3>
+                        <div id="statusDesc" class="status-desc">请稍候</div>
+                        <div id="roomIdBox" class="room-id-box hidden">
+                            <div class="rid-label">你的房间号：</div>
+                            <div class="rid-number" id="roomIdShow">------</div>
+                            <button id="btnCopyRoom" class="copy-btn">📋 复制房间号</button>
+                        </div>
+                        <div id="onlinePlayers" class="online-players"></div>
+                        <button id="btnCancelOnline" class="menu-btn danger small">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 【技能图鉴】 ========== -->
+        <div id="skillLibScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>✨ 技能图鉴 · 共11种神技</h2>
+                <div style="width:100px"></div>
+            </div>
+            <div class="skill-lib-grid" id="skillLibGrid"></div>
+        </div>
+
+        <!-- ========== 【技能装备（11选2）】 ========== -->
+        <div id="equipSkillScreen" class="screen">
+            <div class="sub-header equip-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🎯 技能装备 · 本局出战带2个</h2>
+                <div class="equipped-count">已选 <span id="equippedNum">0</span>/2</div>
+            </div>
+            <div class="equip-tip">
+                <div class="tip-text">👉 点击下方 11 个技能卡片选择 <b>2 个</b> 你喜欢的技能装备上，每局游戏只能使用已装备的技能哦！<br>💎 带 <b>神技·💎</b> 标签的需要用钻石解锁后才能装备（去「💎 钻石充值」解锁吧！）</div>
+                <div class="equipped-preview" id="equippedPreview">
+                    <div class="equip-slot empty" data-es="0"><div class="es-num">1</div><div class="es-empty">点击左侧技能装备</div></div>
+                    <div class="equip-arrow">⚔️</div>
+                    <div class="equip-slot empty" data-es="1"><div class="es-num">2</div><div class="es-empty">点击左侧技能装备</div></div>
+                </div>
+                <div class="equip-actions">
+                    <button id="btnRandomEquip" class="menu-btn small">🎲 随机2个</button>
+                    <button id="btnClearEquip" class="menu-btn danger small">🧹 清空重选</button>
+                    <button id="btnConfirmEquip" class="menu-btn primary small">✅ 确认保存</button>
+                </div>
+            </div>
+            <div class="equip-grid" id="equipGrid"></div>
+        </div>
+
+        <!-- ========== 【💎 钻石充值中心】 ========== -->
+        <div id="rechargeScreen" class="screen">
+            <div class="sub-header recharge-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>💎 钻石充值中心</h2>
+                <div class="diamond-balance">余额：<span id="diamondBalance">0</span> 💎</div>
+            </div>
+            <div class="recharge-banner">
+                <div class="rb-title">💎 首充任意档位额外送 <span class="hot-txt">+100% 钻石</span>！</div>
+                <div class="rb-desc">充值获得钻石，即可解锁【神话至尊皮肤】和【神级技能】，让你无敌跑酷！</div>
+            </div>
+            <div class="recharge-grid" id="rechargeGrid">
+                <!-- 由JS渲染8个套餐 -->
+            </div>
+            <div class="recharge-tip">
+                ⚠️ 提示：本游戏为演示版，充值不会真实扣款，点击即模拟充值到账，仅供学习体验！
+            </div>
+        </div>
+
+        <!-- ========== 【游戏主界面】 ========== -->
+        <div id="gameScreen" class="screen">
+            <div class="game-header big">
+                <button id="btnBackMenu" class="back-btn">← 菜单</button>
+                <div class="score-board">
+                    <div class="score-chip"><span class="chip-icon">⭐</span><span id="score" class="chip-value">0</span></div>
+                    <div class="score-chip"><span class="chip-icon">🪙</span><span id="coins" class="chip-value">0</span></div>
+                    <div class="score-chip"><span class="chip-icon">🚀</span><span id="speedLevel">1</span></div>
+                    <div class="score-chip double-chip" id="doubleCoinChip" style="display:none"><span class="chip-icon">💰</span> 双倍!</div>
+                    <div class="score-chip hp-chip" id="hpChip">
+                        <span class="chip-icon">❤️</span><span id="playerHp" class="chip-value">3</span>
+                    </div>
+                </div>
+                <button id="btnPause" class="pause-btn">⏸️</button>
+            </div>
+
+            <!-- 模式显示 -->
+            <div class="mode-bar">
+                <div id="modeLabel" class="mode-label">🎮 单人模式</div>
+                <div id="partnerStatus" class="partner-status hidden">
+                    <span class="partner-dot"></span>
+                    <span id="partnerName">联机伙伴</span>
+                    <span class="partner-role">（帮忙放技能）</span>
+                </div>
+            </div>
+
+            <!-- 道具栏 -->
+            <div class="item-bar">
+                <div class="item-slot" id="slotShield" data-item="shield"><span class="item-emoji">🛡️</span><span class="item-count" id="countShield">0</span><span class="item-key">1</span></div>
+                <div class="item-slot" id="slotMagnet" data-item="magnet"><span class="item-emoji">🧲</span><span class="item-count" id="countMagnet">0</span><span class="item-key">2</span></div>
+                <div class="item-slot" id="slotRevive" data-item="revive"><span class="item-emoji">💖</span><span class="item-count" id="countRevive">0</span><span class="item-key">3</span></div>
+                <div class="item-slot" id="slotDouble" data-item="double"><span class="item-emoji">💰</span><span class="item-count" id="countDouble">0</span><span class="item-key">4</span></div>
+            </div>
+
+            <!-- ========== 技能栏（10个技能） ========== -->
+            <div class="skill-bar" id="skillBar">
+                <!-- JS动态渲染11个技能格子 -->
+            </div>
+
+            <!-- 激活Buff -->
+            <div class="active-buffs" id="activeBuffs"></div>
+
+            <!-- 游戏画布（更大！1100x550） -->
+            <div class="canvas-wrapper big">
+                <canvas id="gameCanvas" width="1100" height="550"></canvas>
+
+                <!-- 暂停界面 -->
+                <div id="pauseScreen" class="overlay hidden">
+                    <div class="overlay-card">
+                        <div class="card-icon">⏸️</div>
+                        <h2>游戏暂停</h2>
+                        <div class="pause-btns">
+                            <button id="btnResume" class="menu-btn primary">继续游戏</button>
+                            <button id="btnRestart" class="menu-btn">重新开始</button>
+                            <button id="btnQuit" class="menu-btn danger">返回菜单</button>
+                        </div>
+                        <p class="pause-tip">按 <kbd>P</kbd> 键快速继续</p>
+                    </div>
+                </div>
+
+                <!-- 游戏结束界面 -->
+                <div id="gameOverScreen" class="overlay hidden">
+                    <div class="overlay-card game-over">
+                        <div class="card-icon">💥</div>
+                        <h2>游戏结束</h2>
+                        <div class="result-grid">
+                            <div class="result-cell"><div class="rc-label">本局得分</div><div class="rc-value" id="finalScore">0</div></div>
+                            <div class="result-cell"><div class="rc-label">获得金币</div><div class="rc-value" id="finalCoins">0</div></div>
+                            <div class="result-cell highlight"><div class="rc-label">最高记录</div><div class="rc-value" id="finalHighScore">0</div></div>
+                        </div>
+                        <div id="newRecord" class="new-flag hidden">🎉 新纪录！</div>
+                        <div id="gainCoins" class="gain-flag">+🪙 0</div>
+                        <div class="pause-btns">
+                            <button id="btnRetry" class="menu-btn primary">再来一局</button>
+                            <button id="btnBackMenu2" class="menu-btn">返回菜单</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-footer">
+                <span>空格/↑ 跳跃(可二段跳) | 1-4 道具 | Q/W/E/R/T/A/S/D/F/G 放技能 | P 暂停 | K 技能图鉴</span>
+            </div>
+        </div>
+
+        <!-- 其他子界面（商店/背包/成就/设置/帮助）结构保持 -->
+        <div id="shopScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🛒 皮肤商店</h2>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <div class="coins-display"><span class="chip-icon">🪙</span><span id="shopCoins">0</span></div>
+                    <div class="coins-display diamond-chip"><span class="chip-icon">💎</span><span id="shopDiamonds">0</span></div>
+                    <button class="recharge-btn mini" id="shopRechargeBtn">充值</button>
+                </div>
+            </div>
+            <div class="shop-tabs">
+                <button class="tab-btn active" data-tab="skins">👕 角色皮肤</button>
+                <button class="tab-btn" data-tab="items">🎁 道具购买</button>
+            </div>
+            <div class="shop-content" id="tabSkins"><div class="shop-grid" id="skinsGrid"></div></div>
+            <div class="shop-content hidden" id="tabItems"><div class="shop-grid" id="itemsGrid"></div></div>
+        </div>
+
+        <div id="bagScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🎒 道具背包</h2>
+                <div class="coins-display"><span class="chip-icon">🪙</span><span id="bagCoins">0</span></div>
+            </div>
+            <div class="bag-info"><p class="bag-tip">💡 游戏中按 <kbd>1</kbd>~<kbd>4</kbd> 使用道具，按 <kbd>Q</kbd><kbd>W</kbd><kbd>E</kbd><kbd>R</kbd><kbd>T</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd><kbd>G</kbd> 释放10种技能！</p></div>
+            <div class="bag-grid" id="bagGrid"></div>
+            <div class="current-skin"><h3>👤 当前皮肤</h3><div id="currentSkinDisplay" class="skin-preview"></div></div>
+        </div>
+
+        <div id="achievementScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>🏅 成就系统</h2>
+                <div class="coins-display">完成度：<span id="achProgress">0/0</span></div>
+            </div>
+            <div class="achievement-grid" id="achievementGrid"></div>
+        </div>
+
+        <div id="settingsScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>⚙️ 游戏设置</h2>
+            </div>
+            <div class="settings-list">
+                <div class="setting-item">
+                    <div class="setting-info"><div class="setting-icon">🎵</div><div><div class="setting-name">背景音乐音量</div><div class="setting-desc">调节背景音乐大小</div></div></div>
+                    <div class="setting-control"><input type="range" id="musicVol" min="0" max="100" value="60"><span id="musicVolVal">60%</span></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info"><div class="setting-icon">🔊</div><div><div class="setting-name">游戏音效音量</div><div class="setting-desc">跳跃、金币、碰撞、技能音效</div></div></div>
+                    <div class="setting-control"><input type="range" id="soundVol" min="0" max="100" value="80"><span id="soundVolVal">80%</span></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info"><div class="setting-icon">🎮</div><div><div class="setting-name">震动反馈</div><div class="setting-desc">碰撞时画面震动</div></div></div>
+                    <div class="setting-control"><label class="switch"><input type="checkbox" id="shakeOn" checked><span class="slider"></span></label></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info"><div class="setting-icon">✨</div><div><div class="setting-name">粒子特效</div><div class="setting-desc">跳跃/技能/收集金币特效</div></div></div>
+                    <div class="setting-control"><label class="switch"><input type="checkbox" id="particlesOn" checked><span class="slider"></span></label></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info"><div class="setting-icon">🎯</div><div><div class="setting-name">默认难度</div><div class="setting-desc">设置开始游戏时的难度</div></div></div>
+                    <div class="setting-control"><select id="defaultDiff"><option value="easy">简单</option><option value="normal" selected>普通</option><option value="hard">困难</option></select></div>
+                </div>
+                <div class="setting-item danger-zone">
+                    <div class="setting-info"><div class="setting-icon">⚠️</div><div><div class="setting-name">重置游戏数据</div><div class="setting-desc">清除所有金币、皮肤、成就记录</div></div></div>
+                    <div class="setting-control"><button id="btnReset" class="menu-btn danger small">重置</button></div>
+                </div>
+                <div class="about-box">
+                    <h4>🏃 跑酷大冒险 联机技能豪华版 v2.0</h4>
+                    <p>11种技能 · 5种敌人 · 真P2P双人联机 · 6款皮肤 · 4种道具 · 10项成就</p>
+                    <p class="about-tip">📢 想让朋友一起玩？查看「部署公网教程.md」，3步搞定全网畅玩！</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="helpScreen" class="screen">
+            <div class="sub-header">
+                <button class="back-btn" data-back="menu">← 返回</button>
+                <h2>📖 玩法说明</h2>
+            </div>
+            <div class="help-content">
+                <div class="help-section">
+                    <h3>🎮 基础操作</h3>
+                    <ul class="help-list">
+                        <li><kbd>空格</kbd> 或 <kbd>↑</kbd> - 跳跃（空中再按=二段跳）</li>
+                        <li><kbd>鼠标点击</kbd> / <kbd>手机触屏</kbd> - 跳跃</li>
+                        <li><kbd>P</kbd> - 暂停/继续</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h3>🎁 道具键 (1~4)</h3>
+                    <ul class="help-list">
+                        <li><kbd>1</kbd> 🛡️护盾 | <kbd>2</kbd> 🧲磁铁 | <kbd>3</kbd> 💖复活 | <kbd>4</kbd> 💰双倍</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h3>✨ 技能键 (Q W E R T A S D F G)</h3>
+                    <ul class="help-list">
+                        <li><kbd>Q</kbd> 🔥 火焰冲击 - 🪙10 | <kbd>W</kbd> ❄️ 冰霜新星 - 🪙25 | <kbd>E</kbd> ⚡ 闪电链 - 🪙18 | <kbd>R</kbd> 💨 加速冲刺 - 🪙15 | <kbd>T</kbd> 💚 治愈光环 - 🪙30</li>
+                        <li><kbd>A</kbd> 🌪️ 旋风斩 - 🪙40 | <kbd>S</kbd> 💎 金币雨 - 🪙35 | <kbd>D</kbd> ⏳ 时光减速 - 🪙20 | <kbd>F</kbd> 🦘 三段跳强化 - 🪙8 | <kbd>G</kbd> 🐦 召唤宠物 - 🪙50</li>
+                        <li>💡 每个技能有冷却时间 + 金币消耗！优先扣本局金币，不够会自动扣背包里的永久金币</li>
+                        <li>💡 灰色=还在冷却中，格子底部的🪙小标签就是需要的金币数</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h3>👾 敌人图鉴（5种）</h3>
+                    <div class="obstacle-list">
+                        <div class="obs-item"><span>👹</span><div><b>小恶魔</b><p>1血，基础敌人，碰到掉血</p></div></div>
+                        <div class="obs-item"><span>💀</span><div><b>骷髅战士</b><p>2血，硬邦邦，打两下才死</p></div></div>
+                        <div class="obs-item"><span>👻</span><div><b>飞行幽灵</b><p>空中飘，攻击不到时要跳</p></div></div>
+                        <div class="obs-item"><span>🦇</span><div><b>蝙蝠群</b><p>左右乱飞的讨厌鬼</p></div></div>
+                        <div class="obs-item"><span>👿</span><div><b>关卡BOSS</b><p>每1000分出现！5血，击杀送大金币！</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 难度弹窗 -->
+        <div id="diffModal" class="modal hidden">
+            <div class="modal-card">
+                <h3>⚡ 选择难度</h3>
+                <div class="diff-options">
+                    <button class="diff-btn" data-diff="easy"><div class="diff-icon">🌱</div><div class="diff-name">简单</div><div class="diff-desc">速度慢 · 敌人少</div></button>
+                    <button class="diff-btn active" data-diff="normal"><div class="diff-icon">🔥</div><div class="diff-name">普通</div><div class="diff-desc">标准挑战</div></button>
+                    <button class="diff-btn" data-diff="hard"><div class="diff-icon">💀</div><div class="diff-name">困难</div><div class="diff-desc">极限速度 · 金币x1.5</div></button>
+                </div>
+                <button id="confirmDiff" class="menu-btn primary full">确认</button>
+            </div>
+        </div>
+
+        <!-- 通用弹窗 -->
+        <div id="toast" class="toast hidden"></div>
+        <div id="confirmModal" class="modal hidden">
+            <div class="modal-card small">
+                <div class="confirm-icon" id="confirmIcon">🛒</div>
+                <h3 id="confirmTitle">确认购买</h3>
+                <p id="confirmDesc">你确定要花费100金币购买吗？</p>
+                <div class="confirm-btns">
+                    <button id="confirmCancel" class="menu-btn">取消</button>
+                    <button id="confirmOk" class="menu-btn primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
